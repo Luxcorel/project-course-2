@@ -6,83 +6,84 @@ import java.util.LinkedList;
 /**
  * This class handles the information about a user-object.
  *
- * @version 1.0
  * @author Carolin Nordstrom, Oscar Kareld, Chanon Borgstrom, Sofia Hallberg.
+ * @version 1.0
  */
 
 public class User implements Serializable {
-    private static final long serialVersionUID = 42L; //489241266336029083L;//-6356381908430432467L;
-    private LinkedList<Activity> completedActivities;
-    private String username;
-    private int age;
-    private int notificationInterval = 45;
-    private boolean isOnline;
-    private UserType userType;
-    private Activity delayedActivity;
-    private String className="Class: User ";
 
-    public User(String username) {
-        this.username = username;
-        completedActivities=new LinkedList<>();
-    }
+  private static final long serialVersionUID = 42L; //489241266336029083L;//-6356381908430432467L;
+  private LinkedList<Activity> completedActivities;
+  private String username;
+  private int age;
+  private int notificationInterval = 45;
+  private boolean isOnline;
+  private UserType userType;
+  private Activity delayedActivity;
+  private String className = "Class: User ";
 
-    public LinkedList<Activity> getCompletedActivities() {
-        return completedActivities;
-    }
+  public User(String username) {
+    this.username = username;
+    completedActivities = new LinkedList<>();
+  }
 
-    public void addActivityToList(Activity activity) {
-        completedActivities.add(activity);
-    }
+  public LinkedList<Activity> getCompletedActivities() {
+    return completedActivities;
+  }
 
-    public void setCompletedActivities(LinkedList<Activity> completedActivities) {
-        this.completedActivities = completedActivities;
-    }
+  public void setCompletedActivities(LinkedList<Activity> completedActivities) {
+    this.completedActivities = completedActivities;
+  }
 
-    public String getUsername() {
-        return username;
-    }
+  public void addActivityToList(Activity activity) {
+    completedActivities.add(activity);
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public String getUsername() {
+    return username;
+  }
 
-    public int getAge() {
-        return age;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
+  public int getAge() {
+    return age;
+  }
 
-    public int getNotificationInterval() {
-        return notificationInterval;
-    }
+  public void setAge(int age) {
+    this.age = age;
+  }
 
-    public void setNotificationInterval(int notificationInterval) {
-        this.notificationInterval = notificationInterval;
-    }
+  public int getNotificationInterval() {
+    return notificationInterval;
+  }
 
-    public boolean isOnline() {
-        return isOnline;
-    }
+  public void setNotificationInterval(int notificationInterval) {
+    this.notificationInterval = notificationInterval;
+  }
 
-    public void setOnline(boolean online) {
-        isOnline = online;
-    }
+  public boolean isOnline() {
+    return isOnline;
+  }
 
-    public UserType getUserType() {
-        return userType;
-    }
+  public void setOnline(boolean online) {
+    isOnline = online;
+  }
 
-    public void setUserType(UserType userType) {
-        this.userType = userType;
-    }
+  public UserType getUserType() {
+    return userType;
+  }
 
-    public Activity getDelayedActivity() {
-        return delayedActivity;
-    }
+  public void setUserType(UserType userType) {
+    this.userType = userType;
+  }
 
-    public void setDelayedActivity(Activity delayedActivity) {
-        this.delayedActivity = delayedActivity;
-    }
+  public Activity getDelayedActivity() {
+    return delayedActivity;
+  }
+
+  public void setDelayedActivity(Activity delayedActivity) {
+    this.delayedActivity = delayedActivity;
+  }
 }

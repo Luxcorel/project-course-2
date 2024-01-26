@@ -1,4 +1,5 @@
 package client;
+
 /**
  * This class creates the ClientController object and starts the client.
  *
@@ -7,7 +8,7 @@ package client;
  */
 public class StartClient {
 
-    public static void main(String[] args) {
-        ClientController client = new ClientController();
-    }
+  public static void main(String[] args) {
+    ClientController client = new ClientController();
+  }
 }

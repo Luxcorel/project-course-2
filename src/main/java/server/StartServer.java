@@ -8,8 +8,9 @@ package server;
  */
 
 public class StartServer {
-    public static void main(String[] args) {
-        ServerController server = new ServerController(4343);
-        server.start();
-    }
+
+  public static void main(String[] args) {
+    ServerController server = new ServerController(4343);
+    server.start();
+  }
 }

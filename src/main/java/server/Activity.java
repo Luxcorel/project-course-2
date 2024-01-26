@@ -1,10 +1,8 @@
 package server;
 
-import javax.swing.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.Date;
+import javax.swing.ImageIcon;
 
 
 /**
@@ -15,76 +13,80 @@ import java.util.Date;
  */
 
 public class Activity implements Serializable {
-    private static final long serialVersionUID = 200428L;
-    private String activityName;
-    private String activityInstruction;
-    private String activityInfo;
-    private boolean isCompleted = false;
-    private String activityUser;
-    private ImageIcon activityImage;
 
-    public Activity () {}
+  private static final long serialVersionUID = 200428L;
+  private String activityName;
+  private String activityInstruction;
+  private String activityInfo;
+  private boolean isCompleted = false;
+  private String activityUser;
+  private ImageIcon activityImage;
 
-    public String getTime() {
-        Calendar cal=Calendar.getInstance();
-        String datum=cal.getTime().getHours()+":"+cal.getTime().getMinutes();
-        return datum;
+  public Activity() {
+  }
 
-    }
+  public Activity(String activityName) {
+    this.activityName = activityName;
+  }
 
-    public Activity(String activityName) {
-        this.activityName=activityName;
-    }
+  public String getTime() {
+    Calendar cal = Calendar.getInstance();
+    String datum = cal.getTime().getHours() + ":" + cal.getTime().getMinutes();
+    return datum;
 
-    public String getActivityInfo() {
-        return activityInfo;
-    }
+  }
 
-    public void setActivityInfo(String activityInfo) {
-        this.activityInfo = activityInfo;
-    }
+  public String getActivityInfo() {
+    return activityInfo;
+  }
 
-    public void setActivityName(String activityName) {
-        this.activityName=activityName;
-    }
+  public void setActivityInfo(String activityInfo) {
+    this.activityInfo = activityInfo;
+  }
 
-    public String getActivityName() {
-        return activityName;
-    }
+  public String getActivityName() {
+    return activityName;
+  }
 
-    public String getActivityInstruction() {
-        return activityInstruction;
-    }
+  public void setActivityName(String activityName) {
+    this.activityName = activityName;
+  }
 
-    public void setActivityInstruction(String activityInstruction) {
-        this.activityInstruction = activityInstruction;
-    }
+  public String getActivityInstruction() {
+    return activityInstruction;
+  }
 
-    public boolean isCompleted() {
-        return isCompleted;
-    }
+  public void setActivityInstruction(String activityInstruction) {
+    this.activityInstruction = activityInstruction;
+  }
 
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
-    }
+  public boolean isCompleted() {
+    return isCompleted;
+  }
 
-    public String getActivityUser() {
-        return activityUser;
-    }
+  public void setCompleted(boolean completed) {
+    isCompleted = completed;
+  }
 
-    public void setActivityUser(String activityUser) {
-        this.activityUser = activityUser;
-    }
+  public String getActivityUser() {
+    return activityUser;
+  }
 
-    public void setActivityImage(ImageIcon icon) {
-        activityImage = icon;
-    }
-    public ImageIcon getActivityImage() {
-        return activityImage;
-    }
-    public void createActivityImage(String fileName) {
-        activityImage = new ImageIcon(fileName);
-    }
+  public void setActivityUser(String activityUser) {
+    this.activityUser = activityUser;
+  }
+
+  public ImageIcon getActivityImage() {
+    return activityImage;
+  }
+
+  public void setActivityImage(ImageIcon icon) {
+    activityImage = icon;
+  }
+
+  public void createActivityImage(String fileName) {
+    activityImage = new ImageIcon(fileName);
+  }
 }
 
 
