@@ -12,34 +12,35 @@ import java.net.Socket;
  */
 
 public class SocketStreamObject {
-    private Socket socket;
-    private ObjectInputStream ois;
-    private ObjectOutputStream oos;
 
-    public SocketStreamObject(Socket socket, ObjectInputStream ois, ObjectOutputStream oos) {
-        this.socket=socket;
-        this.ois = ois;
-        this.oos = oos;
-    }
+  private Socket socket;
+  private ObjectInputStream ois;
+  private ObjectOutputStream oos;
 
-    public Socket getSocket() {
-        return socket;
-    }
+  public SocketStreamObject(Socket socket, ObjectInputStream ois, ObjectOutputStream oos) {
+    this.socket = socket;
+    this.ois = ois;
+    this.oos = oos;
+  }
 
-    public ObjectInputStream getOis() {
-        return ois;
-    }
+  public Socket getSocket() {
+    return socket;
+  }
 
-    public void setOis(ObjectInputStream ois) {
-        this.ois = ois;
-    }
+  public ObjectInputStream getOis() {
+    return ois;
+  }
 
-    public ObjectOutputStream getOos() {
-        return oos;
-    }
+  public void setOis(ObjectInputStream ois) {
+    this.ois = ois;
+  }
 
-    public void setOos(ObjectOutputStream oos) {
-        this.oos = oos;
-    }
+  public ObjectOutputStream getOos() {
+    return oos;
+  }
+
+  public void setOos(ObjectOutputStream oos) {
+    this.oos = oos;
+  }
 
 }
