@@ -1,8 +1,14 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UselessTests {
+/**
+ * Note: These example tests do not test any real requirements in the project!
+ */
+public class ExampleTests {
 
+  /**
+   * Tests requirement: Example.1
+   */
   @Test
   public void testAssertionsEquals() {
     int result = Math.max(1, 10);
@@ -10,6 +16,9 @@ public class UselessTests {
     Assertions.assertEquals(10, result);
   }
 
+  /**
+   * Tests requirement: Example.2
+   */
   @Test
   public void testAssertionsThrows() {
     // this has to throw specified exception to pass the test
