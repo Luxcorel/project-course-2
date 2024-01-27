@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -10,6 +11,7 @@ public class ExampleTests {
    * Tests requirement: Example.1
    */
   @Test
+  @Disabled("Example test")
   public void testAssertionsEquals() {
     int result = Math.max(1, 10);
 
@@ -20,6 +22,7 @@ public class ExampleTests {
    * Tests requirement: Example.2
    */
   @Test
+  @Disabled("Example test")
   public void testAssertionsThrows() {
     // this has to throw specified exception to pass the test
     Assertions.assertThrows(ArithmeticException.class, () -> {
