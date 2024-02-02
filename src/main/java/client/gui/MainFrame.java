@@ -39,15 +39,16 @@ public class MainFrame extends JFrame {
              IllegalAccessException e) {
       e.printStackTrace();
     }
-    createLoginFrame();
+    //createLoginFrame();
+    createMainFrame();
   }
 
-  /**
-   * Creates the login window.
-   */
-  public void createLoginFrame() {
-    LogInFrame loginFrame = new LogInFrame(this);
-  }
+//  /**
+//   * Creates the login window.
+//   */
+//  public void createLoginFrame() {
+//    LogInFrame loginFrame = new LogInFrame(this);
+//  }
 
   /**
    * Sets up the main frame for the GUI.
@@ -57,7 +58,7 @@ public class MainFrame extends JFrame {
     addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent we) {
         clientController.logOut();
-        createLoginFrame();
+        //createLoginFrame();
       }
     });
     setLayout(null);
@@ -92,7 +93,7 @@ public class MainFrame extends JFrame {
   public void logOut() {
     clientController.logOut();
     dispose();
-    new LogInFrame(this);
+    //new LogInFrame(this);
   }
 
   /**
