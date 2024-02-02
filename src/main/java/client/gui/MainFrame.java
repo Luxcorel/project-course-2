@@ -12,7 +12,7 @@ import server.Activity;
  * This class starts the Login window and then awaits the user's input, and finally starts the main
  * GUI.
  *
- * @author Carolin Nordstrom, Oscar Kareld, Chanon Borgstrom, Sofia Hallberg.
+ * @author Carolin Nordstrom, Oscar Kareld, Chanon Borgstrom, Sofia Hallberg, Edvin Topalovic.
  * @version 1.0
  */
 
