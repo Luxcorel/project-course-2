@@ -13,7 +13,7 @@ import server.Activity;
  * GUI.
  *
  * @author Carolin Nordstrom, Oscar Kareld, Chanon Borgstrom, Sofia Hallberg, Edvin Topalovic.
- * @version 1.0
+ * @version 1.1
  */
 
 public class MainFrame extends JFrame {
