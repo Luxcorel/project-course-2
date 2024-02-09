@@ -80,7 +80,7 @@ public class ActivityManager {
    */
   public Activity createActivity(String name, String inst, String info) {
     Activity activity = new Activity();
-    int newId = activityRegister.size();
+    int newId = activityRegister.size() + 1;
 
     activity.setActivityID(newId);
     activity.setActivityName(name);
