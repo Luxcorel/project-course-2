@@ -1,7 +1,9 @@
 package client;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.Collections;
  * This class creates a register that handles Activity objects.
  *
  * @author Carolin Nordstrom, Oscar Kareld, Chanon Borgstrom, Sofia Hallberg, Edvin Topalovic.
- * @version 1.1
+ * @version 1.1.2
  */
 
 public class ActivityManager {
@@ -91,5 +93,33 @@ public class ActivityManager {
     activityRegister.add(activity);
 
     return getActivity(newId);
+  }
+
+  /**
+   * Saves activites to ./files/activities.txt
+   * @author Edvin Topalovic
+   */
+  public void saveActivitiesToDisc(String file) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+
+      writer.write(String.valueOf(activityRegister.size()));  // amount of objects
+      writer.newLine();
+
+      for (Activity activity : activityRegister) {
+        writer.write(activity.getActivityID() + "");
+        writer.newLine();
+        writer.write(activity.getActivityName());
+        writer.newLine();
+        writer.write(activity.getActivityInstruction());
+        writer.newLine();
+        writer.write(activity.getActivityInfo());
+        writer.newLine();
+        writer.write(activity.getActivityImage().getDescription());
+        writer.newLine();
+      }
+
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
   }
 }
