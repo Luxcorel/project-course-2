@@ -6,13 +6,15 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.lang.reflect.Field;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppPanelTest {
   @Test
   void testBtnStartTimerClick() throws IllegalAccessException, NoSuchFieldException, InterruptedException {
-    MainPanel mainPanelTest = new MainPanel(new MainFrame(new ClientController()), "Test");
+    MainFrame mainFrameMock = Mockito.mock(MainFrame.class);
+    MainPanel mainPanelTest = new MainPanel(mainFrameMock, "Test");
     AppPanel appPanelTest = new AppPanel(mainPanelTest);
 
     Field fieldBtn = AppPanel.class.getDeclaredField("btnStartTimer");
