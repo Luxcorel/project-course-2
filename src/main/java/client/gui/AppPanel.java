@@ -30,8 +30,8 @@ import server.Activity;
 /**
  * This is the panel in the frame that contains pretty much all of the components in the GUI.
  *
- * @author Oscar Kareld, Chanon Borgstrom, Carolin Nordstrom
- * @version 1.0
+ * @author Oscar Kareld, Chanon Borgstrom, Carolin Nordstrom, Edvin Topalovic.
+ * @version 1.1
  */
 public class AppPanel extends JPanel {
 
@@ -46,6 +46,7 @@ public class AppPanel extends JPanel {
 
   private JButton btnLogOut;
   private JButton btnInterval;
+  private JButton btnStartTimer;
   private JPanel intervalPnl;
   private JLabel lblInterval;
 
@@ -106,10 +107,16 @@ public class AppPanel extends JPanel {
     centerPnl.setSize(new Dimension(intervalPnl.getWidth(), intervalPnl.getHeight()));
     centerPnl.setBackground(clrPanels);
     updateLblInterval();
+
     btnInterval = new JButton("Ändra intervall");
     startTimer(Integer.parseInt((String) cmbTimeLimit.getSelectedItem()), 59);
     centerPnl.add(cmbTimeLimit);
     centerPnl.add(btnInterval);
+
+    btnStartTimer = new JButton("Starta timer");
+    btnStartTimer.addActionListener(listener);
+    centerPnl.add(btnStartTimer, BorderLayout.SOUTH);
+
     intervalPnl.add(lblInterval, BorderLayout.NORTH);
     intervalPnl.add(centerPnl, BorderLayout.CENTER);
     intervalPnl.add(lblTimerInfo, BorderLayout.SOUTH);
@@ -303,6 +310,9 @@ public class AppPanel extends JPanel {
         countTimerInterval(interval);
         mainPanel.sendChosenInterval(interval);
         updateLblInterval();
+      }
+      if (click == btnStartTimer) {
+        startTimer(Integer.parseInt((String) cmbTimeLimit.getSelectedItem()), 59);
       }
     }
   }
