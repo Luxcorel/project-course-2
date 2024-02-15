@@ -134,7 +134,7 @@ public class AppPanel extends JPanel {
   }
 
   public void startTimer(int minutes, int seconds) {
-    minuteInterval = minutes - 1;
+    minuteInterval = minutes- 1;
     secondInterval = seconds;
     int delay = 1000;
     int period = 1000;
