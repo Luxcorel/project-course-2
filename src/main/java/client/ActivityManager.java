@@ -28,23 +28,44 @@ public class ActivityManager {
     int nbrOfActivities;
 
     try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
-      nbrOfActivities = Integer.parseInt(br.readLine());
-      for (int i = 0; i < nbrOfActivities; i++) {
+      String line = br.readLine();
+      if (line != null) {
+        nbrOfActivities = Integer.parseInt(line);
+        for (int i = 0; i < nbrOfActivities; i++) {
+          Activity activity = new Activity();
 
-        Activity activity = new Activity();
+          // Read each attribute separately
+          String idString = br.readLine();
+          String name = br.readLine();
+          String instruction = br.readLine();
+          String info = br.readLine();
+          String imageDescription = br.readLine();
 
-        activity.setActivityID(Integer.parseInt(br.readLine()));
-        activity.setActivityName(br.readLine());
-        activity.setActivityInstruction(br.readLine());
-        activity.setActivityInfo(br.readLine());
-        activity.createActivityImage(br.readLine());
+          // Check for null values before parsing
+          if (idString != null) {
+            activity.setActivityID(Integer.parseInt(idString));
+          }
+          if (name != null) {
+            activity.setActivityName(name);
+          }
+          if (instruction != null) {
+            activity.setActivityInstruction(instruction);
+          }
+          if (info != null) {
+            activity.setActivityInfo(info);
+          }
+          if (imageDescription != null) {
+            activity.createActivityImage(imageDescription);
+          }
 
-        activityRegister.add(activity);
+          activityRegister.add(activity);
+        }
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
+
 
 //  public LinkedList<Activity> getActivityRegister() {
 //    return activityRegister;
