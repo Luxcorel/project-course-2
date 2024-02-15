@@ -1,5 +1,6 @@
 package server;
 
+import client.gui.MainFrame;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -20,10 +21,9 @@ import java.util.Random;
 
 public class ServerController extends Thread {
 
+  private MainFrame mainFrame;
   private HashMap<String, SocketStreamObject> socketHashMap;
   private HashMap<String, UserTimer> userTimerHashMap;
-  private ReceiverServer receiverServer;
-  private SenderServer senderServer;
   private UserRegister userRegister;
   private ActivityRegister activityRegister;
   private Random rand;
@@ -37,12 +37,10 @@ public class ServerController extends Thread {
    *
    * @param port the received port number.
    */
-  public ServerController(int port) {
+  public ServerController() {
     receiveBuffer = new Buffer<>();
     sendBuffer = new Buffer();
     socketHashMap = new HashMap();
-    receiverServer = new ReceiverServer(port, socketHashMap, receiveBuffer);
-    senderServer = new SenderServer(socketHashMap, sendBuffer);
     userRegister = new UserRegister();
     readUsers(userFilePath);
     activityRegister = new ActivityRegister("files/activities.txt");
@@ -242,6 +240,7 @@ public class ServerController extends Thread {
               createUserTimer(user);
               User updatedUser = checkLoginUser(user);
               sendBuffer.put(updatedUser);
+
               break;
             case LOGOUT:
               sendBuffer.put(user);

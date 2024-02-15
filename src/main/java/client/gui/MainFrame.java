@@ -104,6 +104,7 @@ public class MainFrame extends JFrame {
     mainPanel.getAppPanel().showNotification(activity);
   }
 
+
   /**
    * Sends a received activity object to the {@link ClientController}.
    *
@@ -116,9 +117,9 @@ public class MainFrame extends JFrame {
   /**
    * Sends a welcome message to a new user.
    */
-  public void sendWelcomeMessage() {
+  /*public void sendWelcomeMessage() {
     mainPanel.getAppPanel().showWelcomeMessage(userName);
-  }
+  }*/
 
   /**
    * Sends the received interval from the GUI to the {@link ClientController}.

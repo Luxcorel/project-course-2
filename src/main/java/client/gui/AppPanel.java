@@ -122,7 +122,7 @@ public class AppPanel extends JPanel {
   }
 
   public void createCBTimeLimit() {
-    interval = new String[]{"5", "15", "30", "45", "60"};
+    interval = new String[]{"1", "5", "15", "30", "45", "60"};
     cmbTimeLimit = new JComboBox<>(interval);
     cmbTimeLimit.setSelectedIndex(3);
   }
@@ -269,7 +269,9 @@ public class AppPanel extends JPanel {
     }
   }
 
-  public void showWelcomeMessage(String userName) {
+  /** Temporarily commented. Implemented in ClientController
+   */
+  /*public void showWelcomeMessage(String userName) {
     ImageIcon welcomeIcon = new ImageIcon("imagesClient/exercise.png");
     Image image = welcomeIcon.getImage();
     Image newImg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
@@ -280,7 +282,7 @@ public class AppPanel extends JPanel {
                                         "med en fysisk aktivitet som ska utföras.\n" +
                                         "Hur ofta du vill ha dessa notiser kan du ställa in själv.",
         "Välkommen till Edim ", 2, new ImageIcon(newImg));
-  }
+  }*/
 
   public class welcomePane extends JOptionPane {
 

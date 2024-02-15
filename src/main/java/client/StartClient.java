@@ -1,5 +1,7 @@
 package client;
 
+import server.ServerController;
+
 /**
  * This class creates the ClientController object and starts the client.
  *
@@ -10,5 +12,6 @@ public class StartClient {
 
   public static void main(String[] args) {
     ClientController client = new ClientController();
+    ServerController serverController = new ServerController();
   }
 }

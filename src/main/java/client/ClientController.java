@@ -1,9 +1,17 @@
 package client;
 
+import client.gui.AppPanel;
+import client.gui.AppPanel.welcomePane;
 import client.gui.MainFrame;
+import client.gui.MainPanel;
 import server.Activity;
 import server.User;
 import server.UserType;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import java.awt.Component;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 /**
  * This class manages the logic for the Client and controls the data flow.
@@ -12,10 +20,11 @@ import server.UserType;
  * @version 1.0
  */
 
-public class ClientController {
+public class ClientController extends Component {
 
   private MainFrame mainFrame;
-  private ClientCommunicationController ccc;
+  private MainPanel mainPanel;
+  private AppPanel appPanel;
   private User user;
   private String className = "Class: ClientController ";
 
@@ -35,6 +44,16 @@ public class ClientController {
   public void createUser(String userName) {
     user = new User(userName);
     logIn();
+    ImageIcon welcomeIcon = new ImageIcon("imagesClient/exercise.png");
+    Image image = welcomeIcon.getImage();
+    Image newImg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+
+    JOptionPane.showMessageDialog(null, "Välkommen " + userName + "!"
+                                        + "\nEDIM kommer skicka notiser till dig med jämna mellanrum,\n"
+                                        +
+                                        "med en fysisk aktivitet som ska utföras.\n" +
+                                        "Hur ofta du vill ha dessa notiser kan du ställa in själv.",
+        "Välkommen till Edim ", 2, new ImageIcon(newImg));
   }
 
   /**
@@ -44,7 +63,6 @@ public class ClientController {
    */
   public void sendActivityToCCC(Activity activity) {
     user.addActivityToList(activity);
-    ccc.sendObject(activity);
   }
 
   /**
@@ -52,8 +70,7 @@ public class ClientController {
    */
   public void logIn() {
     user.setUserType(UserType.LOGIN);
-    ccc = new ClientCommunicationController(this);
-    ccc.sendObject(user);
+
   }
 
   /**
@@ -61,7 +78,6 @@ public class ClientController {
    */
   public void logOut() {
     user.setUserType(UserType.LOGOUT);
-    ccc.sendObject(user);
   }
 
   /**
@@ -83,7 +99,7 @@ public class ClientController {
     UserType userType = user.getUserType();
     this.user = user;
     if (userType == UserType.SENDWELCOME) {
-      mainFrame.sendWelcomeMessage();
+     // mainFrame.sendWelcomeMessage();
     }
   }
 
@@ -96,7 +112,6 @@ public class ClientController {
   public void setInterval(int interval) {
     user.setNotificationInterval(interval);
     user.setUserType(UserType.SENDINTERVAL);
-    ccc.sendObject(user);
   }
 
 }
