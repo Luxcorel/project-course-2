@@ -33,7 +33,7 @@ import server.Activity;
 /**
  * This is the panel in the frame that contains pretty much all of the components in the GUI.
  *
- * @author Oscar Kareld, Chanon Borgstrom, Carolin Nordstrom, Edvin Topalovic
+ * @author Oscar Kareld, Chanon Borgstrom, Carolin Nordstrom, Edvin Topalovic.
  * @version 1.1
  */
 public class AppPanel extends JPanel {
