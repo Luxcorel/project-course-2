@@ -1,12 +1,11 @@
 package client.gui;
 
-import client.gui.AppPanel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.lang.reflect.Field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AppPanelTest {
+public class AppPanelTest2 {
     private AppPanel appPanel;
 
     @BeforeEach
