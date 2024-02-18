@@ -111,6 +111,8 @@ public class AppPanel extends JPanel {
 
     btnStartTimer = new JButton("Starta timer");
     btnStartTimer.addActionListener((event) -> {
+      btnStartTimer.setText("Ändra intervall");
+
       int intervalToUse = (int) spnrTimeSelect.getValue(); // TODO: store this somewhere
       updateLblInterval();
 
