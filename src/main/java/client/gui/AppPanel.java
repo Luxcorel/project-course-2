@@ -27,7 +27,10 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -46,7 +49,8 @@ public class AppPanel extends JPanel {
   private String[] interval;
   private JLabel lblTimerInfo;
   private JTextArea taActivityInfo;
-  private JComboBox cmbTimeLimit;
+  //private JComboBox cmbTimeLimit;
+  private JSpinner spnrTimeSelect;
   private LinkedList<Activity> activities;
   private JList activityList;
 
@@ -115,8 +119,8 @@ public class AppPanel extends JPanel {
     updateLblInterval();
 
     btnInterval = new JButton("Ändra intervall");
-    startTimer(Integer.parseInt((String) cmbTimeLimit.getSelectedItem()), 59);
-    centerPnl.add(cmbTimeLimit);
+    startTimer((Integer) spnrTimeSelect.getValue(), 59);
+    centerPnl.add(spnrTimeSelect);
     centerPnl.add(btnInterval);
 
     btnStartTimer = new JButton("Starta timer");
@@ -129,19 +133,21 @@ public class AppPanel extends JPanel {
   }
 
   public void updateLblInterval() {
-    int interval;
-    interval = Integer.parseInt((String) cmbTimeLimit.getSelectedItem());
+    int interval = (int) spnrTimeSelect.getValue();
     lblInterval.setText("Aktivt tidsintervall: " + interval + " minuter");
   }
 
   public void createCBTimeLimit() {
-    interval = new String[]{"5", "15", "30", "45", "60"};
-    cmbTimeLimit = new JComboBox<>(interval);
-    cmbTimeLimit.setSelectedIndex(3);
+    //interval = new String[]{"5", "15", "30", "45", "60"};
+    //cmbTimeLimit = new JComboBox<>(interval);
+    //cmbTimeLimit.setSelectedIndex(3);
+
+    SpinnerModel spnrModel = new SpinnerNumberModel(1, 1, 60, 1);
+    spnrTimeSelect = new JSpinner(spnrModel);
   }
 
   public void startTimer(int minutes, int seconds) {
-    minuteInterval = minutes - 1;
+    minuteInterval = minutes- 1;
     secondInterval = seconds;
     int delay = 1000;
     int period = 1000;
@@ -237,7 +243,7 @@ public class AppPanel extends JPanel {
 
   public void updateActivityList(Activity activity) {
     stopTimer();
-    startTimer(Integer.parseInt((String) cmbTimeLimit.getSelectedItem()), 59);
+    startTimer(Integer.parseInt((String) spnrTimeSelect.getValue()), 59);
     activities.add(activity);
     listModel.addElement(activity.getActivityName() + " " + LocalDateTime.now().format(
         DateTimeFormatter.ofPattern("H:mm")));
@@ -313,7 +319,7 @@ public class AppPanel extends JPanel {
         mainPanel.logOut();
       }
       if (click == btnInterval) {
-        interval = Integer.parseInt((String) cmbTimeLimit.getSelectedItem());
+        interval = (int) spnrTimeSelect.getValue();
         countTimerInterval(interval);
         mainPanel.sendChosenInterval(interval);
         updateLblInterval();
