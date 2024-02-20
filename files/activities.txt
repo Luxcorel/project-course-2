@@ -1,55 +1,82 @@
-12
-1
-Knäböj
-Gör 10 knäböj (squats). &Glöm inte att ha tyngden på hälarna och att knäna ska peka i samma riktning som tårna.&
-Du har nu tränat lår och rumpa samt ökat din koncentration.
-imagesServer/knaboj.jpg
-2
-Armhävningar
-Gör 5 breda, fem mellan och fem smala armhävningar. På tårna!&&
-Bröst, axlar, biceps, triceps, rygg, mage, rumpa. Armhävningen kräver en anspänning i hela kroppen och fokuserar på flera stora muskelgrupper.
-imagesServer/pushup.jpg
-3
-Trappgång
-Gå upp och ner i närmsta trappa i tre minuter.&&
-Du har nu fått upp din puls och blodcirkulation, så att mer syresatt blod kommit till hjärnan vilket ökar din kognitiva prestanda.
-imagesServer/stair-walking.jpg
-4
-Utfall
-Gör 10 utfallssteg. Sätt händerna på höfterna och stå rak i ryggen. &Ta ett långt kliv framåt med det ena benet och sjunk ner tills bakre &knät nuddar golvet. Håll överkroppen upprätt och blicken framåt.
-Utfallssteg är en effektiv övning för både ben- och sätesmusklerna. Utöver detta tränar övningen också din balans, koordination och rörlighet, då den utförs med ett ben i taget.
-imagesServer/utfall.jpg
-5
-Upphopp
-Gör 10 upphopp. Börja med att stå med rak kropp och försök spänn magen genom övningen. &Knäna ska vara i linje med fötterna. Gå ner till 90 grader och vänd därefter mjukt &tillbaka för att sedan hoppa upp med spänst. Landa mjukt och fortsätt direkt ner till knäböj igen.
-Upphopp är en riktig pulshöjare! Den arbetar med lårens framsida och din sätesmuskulatur, dvs rumpan. Bra för både kropp och koncentration!
-imagesServer/upphopp.jpg
-6
-Superman
-Superman! Stå på alla fyra. För ihop vänster armbåge och höger knä. &Sträck fram väster ben och pressa bak vänster fot. &Upprepa rörelsen tio gånger på samma sida innan du byter.
-Superman är kanon för bålen, rumpan, balansen och koncentrationen!
-imagesServer/superman.jpg
-7
-Sjöstjärnan
-Gör sjöstjärnan 20 gånger. Stå ganska brett isär med fötterna. &Sträck ut armarna rakt snett uppåt så kroppen bildar formen av en stjärna. För sedan höger hand &mot vänster fot, utan att böja på knäna eller över kroppen. Upprepa samma rörelse på andra sidan.
-Nu har du tränat sneda magmusklerna och baksida lår. Samt ökat din puls och din koncentration!
-imagesServer/sjostjarna.jpg
-8
-Sprattelgubbe
-Sprattelgubbe! Gör så många du kan under 60 sekunder. &Stå upprätt med armarna intill sidorna. Hoppa och sära på benen samtidigt som du för armarna rakt ut &och upp över huvudet. Gör sedan ett omedelbart hopp där du återgår till startposititonen.
-Den här övningen är jättebra för att få upp pulsen även om man inte har en stor yta att röra sig på.
-imagesServer/sprattelgubbe.jpg
-9
-Flygande telemark
-Flygande telemark: Tänk dig att du åker längdskidor, &fast du tar sats och lättar från marken varje gång du byter ben. &Med lätta ben, saxar du i luften. Gör övningen i 60 sekunder.
-Den här övningen är jättebra för att få upp pulsen även om man inte har en stor yta att röra sig på.
-imagesServer/telemark.jpg
-10
-Knäböj på ett ben
-Gör 10 knäböj på ett ben! Det andra benet ska peka rakt framåt. &Börja med 5 på höger ben och avsluta med 5 på vänstra.&
-Du har nu tränat lår, rumpa, balans och dessutom ökat din koncentration.
-imagesServer/ettben.jpg
-11
-Test name
-Test instruction
-Test info
+[
+  {
+    "activityName": "Knäböj",
+    "activityInstruction": "Gör 10 knäböj (squats). &Glöm inte att ha tyngden på hälarna och att knäna ska peka i samma riktning som tårna.&",
+    "activityInfo": "Du har nu tränat lår och rumpa samt ökat din koncentration.",
+    "isCompleted": false,
+    "imagePath": "imagesServer/knaboj.jpg",
+    "activityID": "fef0cd33-8ed2-4616-9122-4575521fe7dd"
+  },
+  {
+    "activityName": "Armhävningar",
+    "activityInstruction": "Gör 5 breda, fem mellan och fem smala armhävningar. På tårna!&&",
+    "activityInfo": "Bröst, axlar, biceps, triceps, rygg, mage, rumpa. Armhävningen kräver en anspänning i hela kroppen och fokuserar på flera stora muskelgrupper.",
+    "isCompleted": false,
+    "imagePath": "imagesServer/pushup.jpg",
+    "activityID": "7afc539d-abc0-4408-9332-47b697d4b9e9"
+  },
+  {
+    "activityName": "Trappgång",
+    "activityInstruction": "Gå upp och ner i närmsta trappa i tre minuter.&&",
+    "activityInfo": "Du har nu fått upp din puls och blodcirkulation, så att mer syresatt blod kommit till hjärnan vilket ökar din kognitiva prestanda.",
+    "isCompleted": false,
+    "imagePath": "imagesServer/stair-walking.jpg",
+    "activityID": "fff36e5d-bdcf-4823-8a58-7aa5c9efbfbb"
+  },
+  {
+    "activityName": "Utfall",
+    "activityInstruction": "Gör 10 utfallssteg. Sätt händerna på höfterna och stå rak i ryggen. &Ta ett långt kliv framåt med det ena benet och sjunk ner tills bakre &knät nuddar golvet. Håll överkroppen upprätt och blicken framåt.",
+    "activityInfo": "Utfallssteg är en effektiv övning för både ben- och sätesmusklerna. Utöver detta tränar övningen också din balans, koordination och rörlighet, då den utförs med ett ben i taget.",
+    "isCompleted": false,
+    "imagePath": "imagesServer/utfall.jpg",
+    "activityID": "213bcf18-97ae-44ec-9438-438185553fcd"
+  },
+  {
+    "activityName": "Upphopp",
+    "activityInstruction": "Gör 10 upphopp. Börja med att stå med rak kropp och försök spänn magen genom övningen. &Knäna ska vara i linje med fötterna. Gå ner till 90 grader och vänd därefter mjukt &tillbaka för att sedan hoppa upp med spänst. Landa mjukt och fortsätt direkt ner till knäböj igen.",
+    "activityInfo": "Upphopp är en riktig pulshöjare! Den arbetar med lårens framsida och din sätesmuskulatur, dvs rumpan. Bra för både kropp och koncentration!",
+    "isCompleted": false,
+    "imagePath": "imagesServer/upphopp.jpg",
+    "activityID": "9b7ef4b6-afec-431c-8b41-00fd509fbb2c"
+  },
+  {
+    "activityName": "Superman",
+    "activityInstruction": "Superman! Stå på alla fyra. För ihop vänster armbåge och höger knä. &Sträck fram väster ben och pressa bak vänster fot. &Upprepa rörelsen tio gånger på samma sida innan du byter.",
+    "activityInfo": "Superman är kanon för bålen, rumpan, balansen och koncentrationen!",
+    "isCompleted": false,
+    "imagePath": "imagesServer/superman.jpg",
+    "activityID": "a5d21a0c-de43-47c8-ae0c-91ad5b5bd159"
+  },
+  {
+    "activityName": "Sjöstjärnan",
+    "activityInstruction": "Gör sjöstjärnan 20 gånger. Stå ganska brett isär med fötterna. &Sträck ut armarna rakt snett uppåt så kroppen bildar formen av en stjärna. För sedan höger hand &mot vänster fot, utan att böja på knäna eller över kroppen. Upprepa samma rörelse på andra sidan.",
+    "activityInfo": "Nu har du tränat sneda magmusklerna och baksida lår. Samt ökat din puls och din koncentration!",
+    "isCompleted": false,
+    "imagePath": "imagesServer/sjostjarna.jpg",
+    "activityID": "827ee713-e258-443c-b245-3de005662eb0"
+  },
+  {
+    "activityName": "Sprattelgubbe",
+    "activityInstruction": "Sprattelgubbe! Gör så många du kan under 60 sekunder. &Stå upprätt med armarna intill sidorna. Hoppa och sära på benen samtidigt som du för armarna rakt ut &och upp över huvudet. Gör sedan ett omedelbart hopp där du återgår till startposititonen.",
+    "activityInfo": "Den här övningen är jättebra för att få upp pulsen även om man inte har en stor yta att röra sig på.",
+    "isCompleted": false,
+    "imagePath": "imagesServer/sprattelgubbe.jpg",
+    "activityID": "cc124537-4333-4ce1-a455-138e290d4cc3"
+  },
+  {
+    "activityName": "Flygande telemark",
+    "activityInstruction": "Flygande telemark: Tänk dig att du åker längdskidor, &fast du tar sats och lättar från marken varje gång du byter ben. &Med lätta ben, saxar du i luften. Gör övningen i 60 sekunder.",
+    "activityInfo": "Den här övningen är jättebra för att få upp pulsen även om man inte har en stor yta att röra sig på.",
+    "isCompleted": false,
+    "imagePath": "imagesServer/telemark.jpg",
+    "activityID": "0922dd6b-0927-4775-8e0a-3e080d21887f"
+  },
+  {
+    "activityName": "Knäböj på ett ben",
+    "activityInstruction": "Gör 10 knäböj på ett ben! Det andra benet ska peka rakt framåt. &Börja med 5 på höger ben och avsluta med 5 på vänstra.&",
+    "activityInfo": "Du har nu tränat lår, rumpa, balans och dessutom ökat din koncentration.",
+    "isCompleted": false,
+    "imagePath": "imagesServer/ettben.jpg",
+    "activityID": "ae4cf9fa-772d-4653-b7c1-04510b8a09d7"
+  }
+]
