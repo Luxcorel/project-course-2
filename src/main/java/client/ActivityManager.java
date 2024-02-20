@@ -66,6 +66,7 @@ public class ActivityManager {
    * @return An ArrayList of {@link Activity} objects
    * @throws RuntimeException if the file could not be read
    * @author Johannes Rosengren
+   * @implNote Requirement F26
    */
   public ArrayList<Activity> readActivitiesFromDisc(String filePath) {
     if (!fileExists(filePath)) {
@@ -102,6 +103,7 @@ public class ActivityManager {
    * @return An ArrayList of {@link Activity} objects
    * @throws RuntimeException if the file could not be read
    * @author Johannes Rosengren
+   * @implNote Requirement F26
    */
   public ArrayList<Activity> readActivitiesFromDisc() {
     return readActivitiesFromDisc(activitiesFilePath);
@@ -183,6 +185,7 @@ public class ActivityManager {
    * @throws RuntimeException if the file could not be created or written to
    * @author Edvin Topalovic
    * @author Johannes Rosengren
+   * @implNote Requirement F25
    */
   public void saveActivitiesToDisc(String filePath) {
     Gson gson = new Gson();
@@ -214,6 +217,7 @@ public class ActivityManager {
    * @throws RuntimeException if the file could not be created or written to
    * @author Edvin Topalovic
    * @author Johannes Rosengren
+   * @implNote Requirement F25
    */
   public void saveActivitiesToDisc() {
     saveActivitiesToDisc(activitiesFilePath);
