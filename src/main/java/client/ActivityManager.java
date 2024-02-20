@@ -1,6 +1,7 @@
 package client;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -205,7 +206,7 @@ public class ActivityManager {
    * @implNote Requirement F25
    */
   public void saveActivitiesToDisc(String filePath) {
-    Gson gson = new Gson();
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
     String encodedActivities = gson.toJson(activityRegister);
 
     if (!fileExists(filePath)) {

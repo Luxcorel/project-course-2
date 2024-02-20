@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,7 +18,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -206,7 +207,8 @@ public class AppPanel extends JPanel {
 
   public void updateActivityList(Activity activity) {
     activities.add(activity);
-    listModel.addElement(activity.getActivityName() + " " + activity.getTime());
+    listModel.addElement(activity.getActivityName() + " " + LocalDateTime.now().format(
+        DateTimeFormatter.ofPattern("k:mm")));
     String newActivityName = splitActivityNameAndTime(activity.getActivityName());
     activity.setActivityName(newActivityName);
     updateUI();
