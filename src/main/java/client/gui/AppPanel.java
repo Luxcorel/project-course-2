@@ -240,7 +240,7 @@ public class AppPanel extends JPanel {
     startTimer(Integer.parseInt((String) cmbTimeLimit.getSelectedItem()), 59);
     activities.add(activity);
     listModel.addElement(activity.getActivityName() + " " + LocalDateTime.now().format(
-        DateTimeFormatter.ofPattern("k:mm")));
+        DateTimeFormatter.ofPattern("H:mm")));
     String newActivityName = splitActivityNameAndTime(activity.getActivityName());
     activity.setActivityName(newActivityName);
     updateUI();
