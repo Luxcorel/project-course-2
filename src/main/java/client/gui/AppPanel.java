@@ -208,7 +208,7 @@ public class AppPanel extends JPanel {
   public void updateActivityList(Activity activity) {
     activities.add(activity);
     listModel.addElement(activity.getActivityName() + " " + LocalDateTime.now().format(
-        DateTimeFormatter.ofPattern("k:mm")));
+        DateTimeFormatter.ofPattern("H:mm")));
     String newActivityName = splitActivityNameAndTime(activity.getActivityName());
     activity.setActivityName(newActivityName);
     updateUI();
