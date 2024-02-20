@@ -8,7 +8,13 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.BorderFactory;
@@ -233,7 +239,8 @@ public class AppPanel extends JPanel {
     stopTimer();
     startTimer(Integer.parseInt((String) cmbTimeLimit.getSelectedItem()), 59);
     activities.add(activity);
-    listModel.addElement(activity.getActivityName() + " " + activity.getTime());
+    listModel.addElement(activity.getActivityName() + " " + LocalDateTime.now().format(
+        DateTimeFormatter.ofPattern("k:mm")));
     String newActivityName = splitActivityNameAndTime(activity.getActivityName());
     activity.setActivityName(newActivityName);
     updateUI();
