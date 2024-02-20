@@ -1,4 +1,4 @@
-10
+12
 1
 Knäböj
 Gör 10 knäböj (squats). &Glöm inte att ha tyngden på hälarna och att knäna ska peka i samma riktning som tårna.&
@@ -49,3 +49,7 @@ Knäböj på ett ben
 Gör 10 knäböj på ett ben! Det andra benet ska peka rakt framåt. &Börja med 5 på höger ben och avsluta med 5 på vänstra.&
 Du har nu tränat lår, rumpa, balans och dessutom ökat din koncentration.
 imagesServer/ettben.jpg
+11
+Test name
+Test instruction
+Test info
