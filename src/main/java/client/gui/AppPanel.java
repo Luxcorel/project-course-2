@@ -1,13 +1,13 @@
 package client.gui;
 
+import client.Activity;
+import client.ClientController;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,10 +25,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import server.Activity;
 
 /**
  * This is the panel in the frame that contains pretty much all of the components in the GUI.
@@ -39,8 +37,8 @@ import server.Activity;
 public class AppPanel extends JPanel {
 
   private MainPanel mainPanel;
+  private ClientController clientController;
 
-  private String[] interval;
   private JLabel lblTimerInfo;
   private JTextArea taActivityInfo;
   //private JComboBox cmbTimeLimit;
@@ -49,29 +47,27 @@ public class AppPanel extends JPanel {
   private JList activityList;
 
   private JButton btnLogOut;
-  private JButton btnInterval;
   private JButton btnStartTimer;
   private JPanel intervalPnl;
   private JLabel lblInterval;
 
   private BorderLayout borderLayout = new BorderLayout();
-  private ActionListener listener = new ButtonListener();
-  private DefaultListModel listModel;
+  private DefaultListModel<String> listModel;
 
-  private String className = "Class: AppPanel: ";
   private Color clrPanels = new Color(142, 166, 192);
   private Color clrMidPanel = new Color(127, 140, 151, 151);
 
   private Timer timer;
-  private int minuteInterval;
-  private int secondInterval;
+  private int timerInterval;
 
-
-  public AppPanel(MainPanel mainPanel) {
+  public AppPanel(MainPanel mainPanel, ClientController clientController) {
     this.mainPanel = mainPanel;
+    this.clientController = clientController;
+
     setupPanel();
     createComponents();
     activities = new LinkedList<>();
+    showWelcomeMessage();
   }
 
   public void setupPanel() {
@@ -86,15 +82,15 @@ public class AppPanel extends JPanel {
     createCBTimeLimit();
     createIntervalPanel();
 
-    btnLogOut = new JButton("Logga ut");
+    btnLogOut = new JButton("Avsluta");
 
     add(activityList, BorderLayout.CENTER);
     add(btnLogOut, BorderLayout.SOUTH);
     add(taActivityInfo, BorderLayout.EAST);
     add(intervalPnl, BorderLayout.WEST);
 
-    btnLogOut.addActionListener(listener);
-    btnInterval.addActionListener(listener);
+    btnLogOut.addActionListener((event) -> mainPanel.logOut());
+
     addActivityListener();
   }
 
@@ -111,14 +107,17 @@ public class AppPanel extends JPanel {
     centerPnl.setSize(new Dimension(intervalPnl.getWidth(), intervalPnl.getHeight()));
     centerPnl.setBackground(clrPanels);
     updateLblInterval();
-
-    btnInterval = new JButton("Ändra intervall");
-    startTimer((Integer) spnrTimeSelect.getValue(), 59);
     centerPnl.add(spnrTimeSelect);
-    centerPnl.add(btnInterval);
 
     btnStartTimer = new JButton("Starta timer");
-    btnStartTimer.addActionListener(listener);
+    btnStartTimer.addActionListener((event) -> {
+      btnStartTimer.setText("Ändra intervall");
+
+      int intervalToUse = (int) spnrTimeSelect.getValue(); // TODO: store this somewhere
+      updateLblInterval();
+
+      startTimer(intervalToUse);
+    });
     centerPnl.add(btnStartTimer, BorderLayout.SOUTH);
 
     intervalPnl.add(lblInterval, BorderLayout.NORTH);
@@ -132,64 +131,37 @@ public class AppPanel extends JPanel {
   }
 
   public void createCBTimeLimit() {
-    //interval = new String[]{"5", "15", "30", "45", "60"};
-    //cmbTimeLimit = new JComboBox<>(interval);
-    //cmbTimeLimit.setSelectedIndex(3);
-
     SpinnerModel spnrModel = new SpinnerNumberModel(1, 1, 60, 1);
     spnrTimeSelect = new JSpinner(spnrModel);
   }
 
-  public void startTimer(int minutes, int seconds) {
-    minuteInterval = minutes- 1;
-    secondInterval = seconds;
-    int delay = 1000;
-    int period = 1000;
+  public void startTimer(int minutes) {
+    if (timer != null) {
+      timer.cancel();
+    }
+
+    timerInterval = (minutes * 60);
+
     timer = new Timer();
     timer.scheduleAtFixedRate(new TimerTask() {
-
       public void run() {
-        String time;
-        if (secondInterval < 10) {
-          time = String.format("timer: %d:0%d", minuteInterval, secondInterval);
-        } else {
-          time = String.format("timer: %d:%d", minuteInterval, secondInterval);
+        int minutes = timerInterval / 60;
+        int seconds = timerInterval % 60;
+
+        if (timerInterval == 0) {
+          String time = String.format("timer: %d:%02d", minutes, seconds);
+          lblTimerInfo.setText(time);
+          SwingUtilities.invokeLater(
+              () -> showNotification(clientController.getActivityManager().getActivity()));
+          timer.cancel();
         }
+
+        timerInterval--;
+
+        String time = String.format("timer: %d:%02d", minutes, seconds);
         lblTimerInfo.setText(time);
-        decreaseInterval();
       }
-    }, delay, period);
-  }
-
-  public void decreaseInterval() {
-    secondInterval--;
-    if (secondInterval == -1) {
-      minuteInterval--;
-      if (minuteInterval == -1) {
-        stopTimer();
-      }
-      secondInterval = 59;
-    }
-  }
-
-  public void countTimerInterval(int chosenInterval) {
-    int difference = 0;
-    if (minuteInterval
-        > chosenInterval) { //Vi var på 15 (minuteInterval), sedan ändrade vi till 5 (chosenInterval)
-      difference = minuteInterval - chosenInterval;
-      System.out.println("if-satsen: Difference: " + difference);
-      minuteInterval = minuteInterval - difference - 1; //-1
-      System.out.println("minuteInterval: " + minuteInterval);
-    } else {
-      difference = chosenInterval - minuteInterval;
-      System.out.println("Else-satsen: Difference: " + difference);
-      minuteInterval = minuteInterval + difference - 1;
-      System.out.println("minuteInterval: " + minuteInterval);
-    }
-  }
-
-  public void stopTimer() {
-    timer.cancel();
+    }, 1000, 1000);
   }
 
   public void createTAActivityInfo() {
@@ -204,7 +176,7 @@ public class AppPanel extends JPanel {
   }
 
   public void createActivityList() {
-    listModel = new DefaultListModel();
+    listModel = new DefaultListModel<>();
     activityList = new JList<>(listModel);
     activityList.setPreferredSize(new Dimension(400, 320));
     activityList.setBorder(BorderFactory.createTitledBorder("Avklarade aktiviteter"));
@@ -214,15 +186,12 @@ public class AppPanel extends JPanel {
   }
 
   public void addActivityListener() {
-    activityList.addListSelectionListener(new ListSelectionListener() {
-      @Override
-      public void valueChanged(ListSelectionEvent e) {
-        String activityName = (String) activityList.getSelectedValue();
-        String newActivityName = splitActivityNameAndTime(activityName);
-        for (Activity activity : activities) {
-          if (activity.getActivityName().equals(newActivityName)) {
-            showActivityInfo(activity.getActivityInfo());
-          }
+    activityList.addListSelectionListener(event -> {
+      String activityName = (String) activityList.getSelectedValue();
+      String newActivityName = splitActivityNameAndTime(activityName);
+      for (Activity activity : activities) {
+        if (activity.getActivityName().equals(newActivityName)) {
+          showActivityInfo(activity.getActivityInfo());
         }
       }
     });
@@ -236,8 +205,6 @@ public class AppPanel extends JPanel {
   }
 
   public void updateActivityList(Activity activity) {
-    stopTimer();
-    startTimer(Integer.parseInt((String) spnrTimeSelect.getValue()), 59);
     activities.add(activity);
     listModel.addElement(activity.getActivityName() + " " + activity.getTime());
     String newActivityName = splitActivityNameAndTime(activity.getActivityName());
@@ -266,36 +233,41 @@ public class AppPanel extends JPanel {
     if (instruction.contains("&")) {
       instructions = instruction.split("&");
     }
-    int answer = welcomePane.showOptionDialog(null, instructions, activity.getActivityName(),
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, activityIcon, buttons,
-        buttons[0]);
-    if (answer == 0) {
-      activity.setCompleted(true);
-      mainPanel.sendActivityFromGUI(activity);
-      updateActivityList(activity);
 
-    } else {
-      stopTimer();
-      startTimer(5, 59);
-      activity.setCompleted(false);
-      mainPanel.sendActivityFromGUI(activity);
+    int answer = WelcomePane.showOptionDialog(null, instructions, activity.getActivityName(),
+        JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, activityIcon, buttons, null);
+
+    switch (answer) {
+      case JOptionPane.NO_OPTION -> {
+        clientController.getActivityManager().enqueueActivity(activity);
+        startTimer(5);
+      }
+      case JOptionPane.YES_OPTION -> {
+        activity.setCompleted(true);
+        updateActivityList(activity);
+
+        int intervalToUse = (int) spnrTimeSelect.getValue(); // TODO: store this somewhere
+        startTimer(intervalToUse);
+      }
     }
+
   }
 
-  public void showWelcomeMessage(String userName) {
+  public void showWelcomeMessage() {
     ImageIcon welcomeIcon = new ImageIcon("imagesClient/exercise.png");
     Image image = welcomeIcon.getImage();
     Image newImg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
-    JOptionPane.showMessageDialog(null, "Välkommen " + userName + "!"
-                                        + "\nEDIM kommer skicka notiser till dig med jämna mellanrum,\n"
-                                        +
-                                        "med en fysisk aktivitet som ska utföras.\n" +
-                                        "Hur ofta du vill ha dessa notiser kan du ställa in själv.",
-        "Välkommen till Edim ", 2, new ImageIcon(newImg));
+    JOptionPane.showMessageDialog(null, """
+            Välkommen!
+            EDIM kommer skicka notiser till dig med jämna mellanrum,
+            med en fysisk aktivitet som ska utföras.
+            Hur ofta du vill ha dessa notiser kan du ställa in själv.
+            """,
+        "Välkommen till EDIM!", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(newImg));
   }
 
-  public class welcomePane extends JOptionPane {
+  private static class WelcomePane extends JOptionPane {
 
     @Override
     public int getMaxCharactersPerLineCount() {
@@ -303,23 +275,4 @@ public class AppPanel extends JPanel {
     }
   }
 
-  class ButtonListener implements ActionListener {
-
-    public void actionPerformed(ActionEvent e) {
-      Object click = e.getSource();
-      int interval;
-      if (click == btnLogOut) {
-        mainPanel.logOut();
-      }
-      if (click == btnInterval) {
-        interval = (int) spnrTimeSelect.getValue();
-        countTimerInterval(interval);
-        mainPanel.sendChosenInterval(interval);
-        updateLblInterval();
-      }
-      if (click == btnStartTimer) {
-        startTimer(Integer.parseInt((String) cmbTimeLimit.getSelectedItem()), 59);
-      }
-    }
-  }
 }
