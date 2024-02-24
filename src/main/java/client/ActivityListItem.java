@@ -16,8 +16,8 @@ public record ActivityListItem(Activity completedActivity, LocalDateTime timeOfC
    */
   @Override
   public String toString() {
-    return completedActivity.getActivityName() + " " + timeOfCompletion
-        .format(DateTimeFormatter.ofPattern("H:mm"));
+    return completedActivity.getActivityName() + " (kl. " + timeOfCompletion
+        .format(DateTimeFormatter.ofPattern("HH:mm")) + ")";
   }
 
 }
