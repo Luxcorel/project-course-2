@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
 
@@ -115,19 +116,27 @@ public class ActivityManager {
   }
 
   /**
-   * Method returns random {@link Activity}-object from {@link #activityRegister}
-   * Randomization is achieved by shuffling the list.
+   * Method returns random {@link Activity}-object from {@link #activityRegister} Randomization is
+   * achieved by shuffling the list.
+   * If the activity list is empty, an empty Optional is returned.
    *
    * @return {@link Activity}-object
    * @author Edvin Topalovic
+   * @author Johannes Rosengren
    */
-  public Activity getActivity() {
+  public Optional<Activity> getActivity() {
+    if (activityRegister.isEmpty()) {
+      return Optional.empty();
+    }
+
     if (!postponedActivities.isEmpty()) {
-      return postponedActivities.remove();
+      Activity activity = postponedActivities.remove();
+      return Optional.of(activity);
     }
 
     Collections.shuffle(activityRegister);
-    return activityRegister.getFirst();
+    Activity activity = activityRegister.getFirst();
+    return Optional.of(activity);
   }
 
   /**
@@ -137,13 +146,14 @@ public class ActivityManager {
    * @return {@link Activity}-object
    * @author Edvin Topalovic
    */
-  public Activity getActivity(String id) {
+  public Optional<Activity> getActivity(String id) {
     for (Activity activity : activityRegister) {
       if (activity.getActivityID().equals(id)) {
-        return activity;
+        return Optional.of(activity);
       }
     }
-    return null;
+
+    return Optional.empty();
   }
 
   /**
@@ -168,6 +178,7 @@ public class ActivityManager {
    * @param activityInfo        Information about the activity
    * @param imagePath           Path to the image for the activity
    * @return the added {@link Activity} object
+   * @throws RuntimeException if the activity could not be added to the activity register
    * @author Edvin Topalovic
    * @author Johannes Rosengren
    */
@@ -184,7 +195,13 @@ public class ActivityManager {
     activityRegister.add(activity);
     saveActivitiesToDisc(activitiesFilePath);
 
-    return getActivity(activity.getActivityID());
+    Optional<Activity> savedActivity = getActivity(activity.getActivityID());
+    if (savedActivity.isEmpty()) {
+      throw new RuntimeException(
+          "ActivityManager.createActivity(): Could not add activity to activity register");
+    }
+
+    return savedActivity.get();
   }
 
   public void enqueueActivity(Activity activity) {

@@ -7,9 +7,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.BorderFactory;
@@ -17,12 +19,15 @@ import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
@@ -42,10 +47,10 @@ public class AppPanel extends JPanel {
 
   // west or left panel and its components
   private JPanel west;
-  private JLabel chosenTimerInterval;
   private JSpinner timerIntervalSelector;
   private JButton startTimer;
   private JLabel timeLeft;
+  private JButton addCustomExercise;
 
   // center "panel" and its components
   private JList<ActivityListItem> activityHistory;
@@ -54,14 +59,12 @@ public class AppPanel extends JPanel {
   // right panel that shows activity info for the selected activity
   private JTextArea activityInfoPanel;
 
-  // bottom panel containing the logout button
-  private JButton logOut;
-
   private final Color clrPanels = new Color(142, 166, 192);
 
   // timer thread keeping track of the time left until the next activity notification should appear
   private Timer timer;
   private int timeLeftInSeconds; // time left in seconds until the next activity notification
+  private int chosenMinuteInterval;
 
   public AppPanel(MainPanel mainPanel, ClientController clientController) {
     this.mainPanel = mainPanel;
@@ -76,68 +79,165 @@ public class AppPanel extends JPanel {
     showWelcomeMessage();
   }
 
-  public void createComponents() {
-    createActivityList();
-    createTAActivityInfo();
-    createCBTimeLimit();
+  private void createComponents() {
+    createActivityHistoryList();
+    createActivityInfoPanel();
     createIntervalPanel();
 
-    logOut = new JButton("Avsluta");
-
-    add(activityHistory, BorderLayout.CENTER);
-    add(logOut, BorderLayout.SOUTH);
-    add(activityInfoPanel, BorderLayout.EAST);
-    add(west, BorderLayout.WEST);
-
+    JButton logOut = new JButton("Avsluta");
     logOut.addActionListener((event) -> mainPanel.logOut());
 
     activityHistory.addListSelectionListener(event -> {
       ActivityListItem selectedActivity = activityHistory.getSelectedValue();
       showActivityInfo(selectedActivity.completedActivity().getActivityInfo());
     });
+
+    add(activityHistory, BorderLayout.CENTER);
+    add(logOut, BorderLayout.SOUTH);
+    add(activityInfoPanel, BorderLayout.EAST);
+    add(west, BorderLayout.WEST);
   }
 
-  public void createIntervalPanel() {
+  private void createIntervalPanel() {
+    SpinnerModel spinnerModel = new SpinnerNumberModel(1, 1, 60, 1);
+    timerIntervalSelector = new JSpinner(spinnerModel);
+
     west = new JPanel();
     west.setLayout(new BorderLayout());
     west.setBackground(clrPanels);
     west.setBorder(
         BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.LIGHT_GRAY, Color.LIGHT_GRAY));
 
-    chosenTimerInterval = new JLabel();
     timeLeft = new JLabel();
     JPanel centerPnl = new JPanel();
     centerPnl.setSize(new Dimension(west.getWidth(), west.getHeight()));
     centerPnl.setBackground(clrPanels);
-    updateLblInterval();
     centerPnl.add(timerIntervalSelector);
 
     startTimer = new JButton("Starta timer");
     startTimer.addActionListener((event) -> {
       startTimer.setText("Ändra intervall");
 
-      int intervalToUse = (int) timerIntervalSelector.getValue(); // TODO: store this somewhere
-      updateLblInterval();
+      chosenMinuteInterval = (int) timerIntervalSelector.getValue();
 
-      startTimer(intervalToUse);
+      clientController.setTitle(
+          chosenMinuteInterval == 1 ?
+              "EDIM | Aktivt tidsintervall: " + chosenMinuteInterval + " minut"
+              : "EDIM | Aktivt tidsintervall: " + chosenMinuteInterval + " minuter"
+      );
+
+      startTimer(chosenMinuteInterval);
     });
     centerPnl.add(startTimer, BorderLayout.SOUTH);
 
-    west.add(chosenTimerInterval, BorderLayout.NORTH);
+    JPanel customExercisePanel = new JPanel();
+    customExercisePanel.setBackground(clrPanels);
+
+    addCustomExercise = new JButton("Lägg till ny övning");
+    addCustomExercise.addActionListener(event -> {
+      addCustomExercise.setEnabled(false);
+
+      Optional<Activity> activityOptional = addCustomActivity();
+      if (activityOptional.isPresent()) {
+        Activity activity = activityOptional.get();
+        JOptionPane.showMessageDialog(this, "Ny aktivitet tillagd: " + activity.getActivityName());
+      }
+
+      addCustomExercise.setEnabled(true);
+    });
+    customExercisePanel.add(addCustomExercise);
+
+    west.add(customExercisePanel, BorderLayout.PAGE_START);
     west.add(centerPnl, BorderLayout.CENTER);
     west.add(timeLeft, BorderLayout.SOUTH);
   }
 
-  public void updateLblInterval() {
-    int interval = (int) timerIntervalSelector.getValue();
-    chosenTimerInterval.setText("Aktivt tidsintervall: " + interval + " minuter");
+  /**
+   * Prompts the user to add a new activity to the list of activities.
+   *
+   * @return an Optional containing the new activity if the user added one, or an empty Optional if
+   * the user canceled the operation or if the input was invalid.
+   * @author Johannes Rosengren
+   * @implNote Requirements: F011, F33
+   */
+  public Optional<Activity> addCustomActivity() {
+    JLabel nameLabel = new JLabel("Namn:");
+    JTextField nameInput = new JTextField(1);
+
+    JLabel instructionLabel = new JLabel("Instruktioner:");
+    JTextArea instructionInput = new JTextArea(5,20);
+    instructionInput.setLineWrap(true);
+    JScrollPane instructionInputScrollPane = new JScrollPane(instructionInput);
+
+    JLabel infoLabel = new JLabel("Information:");
+    JTextArea infoInput = new JTextArea(5, 20);
+    infoInput.setLineWrap(true);
+    JScrollPane infoInputScrollPane = new JScrollPane(infoInput);
+
+    JLabel imagePathLabel = new JLabel("Bild (valfritt):");
+    JTextField imagePathInput = new JTextField();
+
+    JButton imageBrowser = new JButton("Välj bild");
+    imageBrowser.addActionListener(event -> {
+      JFileChooser fileChooser = new JFileChooser();
+      int option = fileChooser.showOpenDialog(this);
+      if (option == JFileChooser.APPROVE_OPTION) {
+        imagePathInput.setText(fileChooser.getSelectedFile().getAbsolutePath());
+      }
+    });
+
+    JPanel addCustomActivityPanel = new JPanel(new BorderLayout());
+
+    JPanel labels = new JPanel(new GridLayout(4, 1, 5, 5));
+    labels.add(nameLabel);
+    labels.add(instructionLabel);
+    labels.add(infoLabel);
+    labels.add(imagePathLabel);
+    addCustomActivityPanel.add(labels, BorderLayout.WEST);
+
+    JPanel inputs = new JPanel(new GridLayout(4, 1, 5, 5));
+    inputs.add(nameInput);
+    inputs.add(instructionInputScrollPane);
+    inputs.add(infoInputScrollPane);
+    inputs.add(imageBrowser);
+    addCustomActivityPanel.add(inputs, BorderLayout.EAST);
+
+    int option = JOptionPane.showConfirmDialog(this, addCustomActivityPanel, "Lägg till ny övning",
+        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+    if (option != JOptionPane.OK_OPTION) {
+      return Optional.empty();
+    }
+
+    String activityName = nameInput.getText();
+    String activityInstruction = instructionInput.getText();
+    String activityInfo = infoInput.getText();
+    String imagePath = imagePathInput.getText();
+    if (activityName.isBlank() || activityInstruction.isBlank() || activityInfo.isBlank()) {
+      JOptionPane.showMessageDialog(this,
+          "Alla textfält måste vara ifyllda för att lägga till en ny övning!", "Information saknas",
+          JOptionPane.ERROR_MESSAGE);
+      return Optional.empty();
+    }
+
+    if (imagePath == null || imagePath.isBlank()) {
+      return Optional.of(
+          clientController.addActivity(activityName, activityInstruction, activityInfo)
+      );
+    }
+
+    return Optional.of(
+        clientController.addActivity(activityName, activityInstruction, activityInfo, imagePath)
+    );
   }
 
-  public void createCBTimeLimit() {
-    SpinnerModel spnrModel = new SpinnerNumberModel(1, 1, 60, 1);
-    timerIntervalSelector = new JSpinner(spnrModel);
-  }
-
+  /**
+   * Starts a timer with the given number of minutes.
+   * If a timer is already running, it is canceled and a new one is started.
+   * The timer will show a notification when it reaches 0.
+   *
+   * @param minutes the number of minutes to start the timer with
+   * @author Johannes Rosengren
+   */
   public void startTimer(int minutes) {
     if (timer != null) {
       timer.cancel();
@@ -155,7 +255,18 @@ public class AppPanel extends JPanel {
           String time = String.format("timer: %d:%02d", minutes, seconds);
           timeLeft.setText(time);
           SwingUtilities.invokeLater(
-              () -> showNotification(clientController.getActivityManager().getActivity()));
+              () -> {
+                Optional<Activity> activity = clientController.getActivity();
+                if (activity.isEmpty()) {
+                  JOptionPane.showMessageDialog(AppPanel.this,
+                      "Hittade inga sparade aktiviteter! Lägg till en aktivitet innan du startar timern.",
+                      "Inga aktiviteter hittades", JOptionPane.ERROR_MESSAGE);
+                  startTimer.setText("Starta timer");
+                  return;
+                }
+
+                showNotification(activity.get());
+              });
           timer.cancel();
         }
 
@@ -164,10 +275,10 @@ public class AppPanel extends JPanel {
         String time = String.format("timer: %d:%02d", minutes, seconds);
         timeLeft.setText(time);
       }
-    }, 1000, 1000);
+    }, 0, 1000);
   }
 
-  public void createTAActivityInfo() {
+  private void createActivityInfoPanel() {
     activityInfoPanel = new JTextArea();
     activityInfoPanel.setBackground(clrPanels);
     activityInfoPanel.setPreferredSize(new Dimension(200, 80));
@@ -178,7 +289,7 @@ public class AppPanel extends JPanel {
     activityInfoPanel.setEditable(false);
   }
 
-  public void createActivityList() {
+  private void createActivityHistoryList() {
     activities = new DefaultListModel<>();
     activityHistory = new JList<>(activities);
     activityHistory.setPreferredSize(new Dimension(400, 320));
@@ -188,71 +299,100 @@ public class AppPanel extends JPanel {
     activityHistory.setFont(font);
   }
 
+  /**
+   * Adds an activity to the activity history list.
+   * This is only stored in memory and not persisted though application restarts.
+   *
+   * @param activity the activity to add to the activity history list
+   */
   public void addToActivityHistory(Activity activity) {
     activities.addElement(new ActivityListItem(activity, LocalDateTime.now()));
   }
 
+  /**
+   * Shows activity info in the activity info panel on the right side in the GUI.
+   *
+   * @param activityInfo the activity info to show in the activity info panel
+   */
   public void showActivityInfo(String activityInfo) {
     activityInfoPanel.setText(activityInfo);
   }
 
-  public ImageIcon createActivityIcon(Activity activity) {
-    ImageIcon activityIcon = activity.getActivityImage();
+  /**
+   * Creates a scaled ImageIcon of the given activity.
+   *
+   * @param activity the activity to create a scaled icon for
+   * @return a scaled ImageIcon of the activity
+   * @throws IllegalArgumentException if the activity does not have an associated image
+   */
+  private ImageIcon createActivityIcon(Activity activity) throws IllegalArgumentException {
+    if (activity.getActivityImage().isEmpty()) {
+      throw new IllegalArgumentException();
+    }
+
+    ImageIcon activityIcon = activity.getActivityImage().get();
     Image image = activityIcon.getImage();
     Image newImg = image.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
     return new ImageIcon(newImg);
   }
 
+  /**
+   * Shows a notification with the given activity.
+   *
+   * @param activity the activity to show a notification for
+   */
   public void showNotification(Activity activity) {
     Toolkit.getDefaultToolkit().beep();
-    ImageIcon activityIcon = createActivityIcon(activity);
+    ImageIcon activityIcon = activity.getActivityImage().isPresent() ? createActivityIcon(activity) : null;
     String[] buttons = {"Jag har gjort aktiviteten!", "Påminn mig om fem minuter",};
     String instruction = activity.getActivityInstruction();
-    String[] instructions = new String[3];
 
-    if (instruction.contains("&")) {
-      instructions = instruction.split("&");
-    }
+    // HTML formatted message for line breaks in JOptionPane
+    String instructionMessage =
+        "<html>" +
+          "<body style='width: 300px'>" +
+            instruction +
+          "</body>" +
+        "</html>";
 
-    int answer = WelcomePane.showOptionDialog(null, instructions, activity.getActivityName(),
+    int option = JOptionPane.showOptionDialog(this, instructionMessage, activity.getActivityName(),
         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, activityIcon, buttons, null);
 
-    switch (answer) {
+    switch (option) {
       case JOptionPane.NO_OPTION -> {
-        clientController.getActivityManager().enqueueActivity(activity);
+        clientController.enqueueActivity(activity);
         startTimer(5);
       }
       case JOptionPane.YES_OPTION -> {
         activity.setCompleted(true);
         addToActivityHistory(activity);
 
-        int intervalToUse = (int) timerIntervalSelector.getValue(); // TODO: store this somewhere
-        startTimer(intervalToUse);
+        startTimer(chosenMinuteInterval);
       }
     }
 
   }
 
+  /**
+   * TODO: add option to disable this through a settings file
+   */
   public void showWelcomeMessage() {
     ImageIcon welcomeIcon = new ImageIcon("imagesClient/exercise.png");
     Image image = welcomeIcon.getImage();
     Image newImg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
     JOptionPane.showMessageDialog(null, """
-            Välkommen!
-            EDIM kommer skicka notiser till dig med jämna mellanrum,
-            med en fysisk aktivitet som ska utföras.
-            Hur ofta du vill ha dessa notiser kan du ställa in själv.
+            <html>
+              <body style='width: 300px'>
+                <h1>Välkommen!</h1>
+                <p>
+                  EDIM kommer skicka notiser till dig med jämna mellanrum, med en fysisk aktivitet som ska utföras.
+                  Hur ofta du vill ha dessa notiser kan du ställa in själv.
+                </p>
+              </body>
+            </html>
             """,
         "Välkommen till EDIM!", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(newImg));
-  }
-
-  private static class WelcomePane extends JOptionPane {
-
-    @Override
-    public int getMaxCharactersPerLineCount() {
-      return 10;
-    }
   }
 
 }

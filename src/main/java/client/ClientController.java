@@ -1,6 +1,7 @@
 package client;
 
 import client.gui.MainFrame;
+import java.util.Optional;
 
 /**
  * This class manages the logic for the Client and controls the data flow.
@@ -13,7 +14,7 @@ import client.gui.MainFrame;
 public class ClientController {
 
   private final String programDataPath;
-  private MainFrame mainFrame;
+  private final MainFrame mainFrame;
   private final ActivityManager activityManager;
 
   /**
@@ -24,7 +25,7 @@ public class ClientController {
   public ClientController(String programDataFolder) {
     this.programDataPath = programDataFolder;
     activityManager = new ActivityManager(
-        programDataFolder + "/activities.json");
+        programDataPath + "/activities.json");
     mainFrame = new MainFrame(this);
   }
 
@@ -32,8 +33,26 @@ public class ClientController {
     System.exit(0);
   }
 
-  public ActivityManager getActivityManager() {
-    return activityManager;
+  /**
+   * Returns a random activity from the activity list.
+   *
+   * @return A random {@link Activity}
+   */
+  public Optional<Activity> getActivity() {
+    return activityManager.getActivity();
+  }
+
+  public Optional<Activity> getActivity(String id) {
+    return activityManager.getActivity(id);
+  }
+
+  /**
+   * Adds an activity to the activity queue.
+   *
+   * @param activity The activity to be queued.
+   */
+  public void enqueueActivity(Activity activity) {
+    activityManager.enqueueActivity(activity);
   }
 
   /**
@@ -58,6 +77,15 @@ public class ClientController {
       String activityInfo, String imagePath) {
     return activityManager.createActivity(activityName, activityInstruction, activityInfo,
         imagePath);
+  }
+
+  /**
+   * Changes the main frame's title.
+   *
+   * @param title The new title of the main frame.
+   */
+  public void setTitle(String title) {
+    mainFrame.setTitle(title);
   }
 
 }
