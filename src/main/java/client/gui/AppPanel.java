@@ -1,6 +1,7 @@
 package client.gui;
 
 import client.Activity;
+import client.ActivityListItem;
 import client.ClientController;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -9,8 +10,6 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.BorderFactory;
@@ -33,107 +32,110 @@ import javax.swing.border.BevelBorder;
  * This is the panel in the frame that contains pretty much all of the components in the GUI.
  *
  * @author Oscar Kareld, Chanon Borgstrom, Carolin Nordstrom, Edvin Topalovic.
+ * @author Johannes Rosengren
  * @version 1.1
  */
 public class AppPanel extends JPanel {
 
-  private MainPanel mainPanel;
-  private ClientController clientController;
+  private final MainPanel mainPanel;
+  private final ClientController clientController;
 
-  private JLabel lblTimerInfo;
-  private JTextArea taActivityInfo;
-  //private JComboBox cmbTimeLimit;
-  private JSpinner spnrTimeSelect;
-  private LinkedList<Activity> activities;
-  private JList activityList;
+  // west or left panel and its components
+  private JPanel west;
+  private JLabel chosenTimerInterval;
+  private JSpinner timerIntervalSelector;
+  private JButton startTimer;
+  private JLabel timeLeft;
 
-  private JButton btnLogOut;
-  private JButton btnStartTimer;
-  private JPanel intervalPnl;
-  private JLabel lblInterval;
+  // center "panel" and its components
+  private JList<ActivityListItem> activityHistory;
+  private DefaultListModel<ActivityListItem> activities;
 
-  private BorderLayout borderLayout = new BorderLayout();
-  private DefaultListModel<String> listModel;
+  // right panel that shows activity info for the selected activity
+  private JTextArea activityInfoPanel;
 
-  private Color clrPanels = new Color(142, 166, 192);
-  private Color clrMidPanel = new Color(127, 140, 151, 151);
+  // bottom panel containing the logout button
+  private JButton logOut;
 
+  private final Color clrPanels = new Color(142, 166, 192);
+
+  // timer thread keeping track of the time left until the next activity notification should appear
   private Timer timer;
-  private int timerInterval;
+  private int timeLeftInSeconds; // time left in seconds until the next activity notification
 
   public AppPanel(MainPanel mainPanel, ClientController clientController) {
     this.mainPanel = mainPanel;
     this.clientController = clientController;
 
-    setupPanel();
+    setSize(new Dimension(819, 438));
+    BorderLayout borderLayout = new BorderLayout();
+    setLayout(borderLayout);
+
     createComponents();
-    activities = new LinkedList<>();
+
     showWelcomeMessage();
   }
 
-  public void setupPanel() {
-    setSize(new Dimension(819, 438));
-  }
-
   public void createComponents() {
-    setLayout(borderLayout);
-
     createActivityList();
     createTAActivityInfo();
     createCBTimeLimit();
     createIntervalPanel();
 
-    btnLogOut = new JButton("Avsluta");
+    logOut = new JButton("Avsluta");
 
-    add(activityList, BorderLayout.CENTER);
-    add(btnLogOut, BorderLayout.SOUTH);
-    add(taActivityInfo, BorderLayout.EAST);
-    add(intervalPnl, BorderLayout.WEST);
+    add(activityHistory, BorderLayout.CENTER);
+    add(logOut, BorderLayout.SOUTH);
+    add(activityInfoPanel, BorderLayout.EAST);
+    add(west, BorderLayout.WEST);
 
-    btnLogOut.addActionListener((event) -> mainPanel.logOut());
+    logOut.addActionListener((event) -> mainPanel.logOut());
 
-    addActivityListener();
+    activityHistory.addListSelectionListener(event -> {
+      ActivityListItem selectedActivity = activityHistory.getSelectedValue();
+      showActivityInfo(selectedActivity.completedActivity().getActivityInfo());
+    });
   }
 
   public void createIntervalPanel() {
-    intervalPnl = new JPanel();
-    intervalPnl.setLayout(new BorderLayout());
-    intervalPnl.setBackground(clrPanels);
-    intervalPnl.setBorder(
+    west = new JPanel();
+    west.setLayout(new BorderLayout());
+    west.setBackground(clrPanels);
+    west.setBorder(
         BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.LIGHT_GRAY, Color.LIGHT_GRAY));
 
-    lblInterval = new JLabel();
-    lblTimerInfo = new JLabel();
+    chosenTimerInterval = new JLabel();
+    timeLeft = new JLabel();
     JPanel centerPnl = new JPanel();
-    centerPnl.setSize(new Dimension(intervalPnl.getWidth(), intervalPnl.getHeight()));
+    centerPnl.setSize(new Dimension(west.getWidth(), west.getHeight()));
     centerPnl.setBackground(clrPanels);
     updateLblInterval();
-    centerPnl.add(spnrTimeSelect);
+    centerPnl.add(timerIntervalSelector);
 
-    btnStartTimer = new JButton("Starta timer");
-    btnStartTimer.addActionListener((event) -> {
-      btnStartTimer.setText("Ändra intervall");
+    startTimer = new JButton("Starta timer");
+    startTimer.addActionListener((event) -> {
+      startTimer.setText("Ändra intervall");
 
-      int intervalToUse = (int) spnrTimeSelect.getValue(); // TODO: store this somewhere
+      int intervalToUse = (int) timerIntervalSelector.getValue(); // TODO: store this somewhere
       updateLblInterval();
 
       startTimer(intervalToUse);
     });
-    centerPnl.add(btnStartTimer, BorderLayout.SOUTH);
+    centerPnl.add(startTimer, BorderLayout.SOUTH);
 
-    intervalPnl.add(lblInterval, BorderLayout.NORTH);
-    intervalPnl.add(centerPnl, BorderLayout.CENTER);
-    intervalPnl.add(lblTimerInfo, BorderLayout.SOUTH);
+    west.add(chosenTimerInterval, BorderLayout.NORTH);
+    west.add(centerPnl, BorderLayout.CENTER);
+    west.add(timeLeft, BorderLayout.SOUTH);
   }
 
   public void updateLblInterval() {
-    int interval = (int) spnrTimeSelect.getValue();
-    lblInterval.setText("Aktivt tidsintervall: " + interval + " minuter");
+    int interval = (int) timerIntervalSelector.getValue();
+    chosenTimerInterval.setText("Aktivt tidsintervall: " + interval + " minuter");
   }
 
   public void createCBTimeLimit() {
     SpinnerModel spnrModel = new SpinnerNumberModel(1, 1, 60, 1);
-    spnrTimeSelect = new JSpinner(spnrModel);
+    timerIntervalSelector = new JSpinner(spnrModel);
   }
 
   public void startTimer(int minutes) {
@@ -141,81 +143,57 @@ public class AppPanel extends JPanel {
       timer.cancel();
     }
 
-    timerInterval = (minutes * 60);
+    timeLeftInSeconds = (minutes * 60);
 
     timer = new Timer();
     timer.scheduleAtFixedRate(new TimerTask() {
       public void run() {
-        int minutes = timerInterval / 60;
-        int seconds = timerInterval % 60;
+        int minutes = timeLeftInSeconds / 60;
+        int seconds = timeLeftInSeconds % 60;
 
-        if (timerInterval == 0) {
+        if (timeLeftInSeconds == 0) {
           String time = String.format("timer: %d:%02d", minutes, seconds);
-          lblTimerInfo.setText(time);
+          timeLeft.setText(time);
           SwingUtilities.invokeLater(
               () -> showNotification(clientController.getActivityManager().getActivity()));
           timer.cancel();
         }
 
-        timerInterval--;
+        timeLeftInSeconds--;
 
         String time = String.format("timer: %d:%02d", minutes, seconds);
-        lblTimerInfo.setText(time);
+        timeLeft.setText(time);
       }
     }, 1000, 1000);
   }
 
   public void createTAActivityInfo() {
-    taActivityInfo = new JTextArea();
-    taActivityInfo.setBackground(clrPanels);
-    taActivityInfo.setPreferredSize(new Dimension(200, 80));
-    taActivityInfo.setLineWrap(true);
-    taActivityInfo.setWrapStyleWord(true);
+    activityInfoPanel = new JTextArea();
+    activityInfoPanel.setBackground(clrPanels);
+    activityInfoPanel.setPreferredSize(new Dimension(200, 80));
+    activityInfoPanel.setLineWrap(true);
+    activityInfoPanel.setWrapStyleWord(true);
     Font font = new Font("SansSerif", Font.PLAIN, 14); //Sarseriff
-    taActivityInfo.setFont(font);
-    taActivityInfo.setEditable(false);
+    activityInfoPanel.setFont(font);
+    activityInfoPanel.setEditable(false);
   }
 
   public void createActivityList() {
-    listModel = new DefaultListModel<>();
-    activityList = new JList<>(listModel);
-    activityList.setPreferredSize(new Dimension(400, 320));
-    activityList.setBorder(BorderFactory.createTitledBorder("Avklarade aktiviteter"));
-    activityList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+    activities = new DefaultListModel<>();
+    activityHistory = new JList<>(activities);
+    activityHistory.setPreferredSize(new Dimension(400, 320));
+    activityHistory.setBorder(BorderFactory.createTitledBorder("Avklarade aktiviteter"));
+    activityHistory.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
     Font font = new Font("SansSerif", Font.PLAIN, 14);
-    activityList.setFont(font);
+    activityHistory.setFont(font);
   }
 
-  public void addActivityListener() {
-    activityList.addListSelectionListener(event -> {
-      String activityName = (String) activityList.getSelectedValue();
-      String newActivityName = splitActivityNameAndTime(activityName);
-      for (Activity activity : activities) {
-        if (activity.getActivityName().equals(newActivityName)) {
-          showActivityInfo(activity.getActivityInfo());
-        }
-      }
-    });
-  }
-
-  public String splitActivityNameAndTime(String activityName) {
-    activityName = activityName.replaceAll("[0-9]", "");
-    activityName = activityName.replaceAll(":", "");
-    activityName = activityName.replaceAll(" ", "");
-    return activityName;
-  }
-
-  public void updateActivityList(Activity activity) {
-    activities.add(activity);
-    listModel.addElement(activity.getActivityName() + " " + LocalDateTime.now().format(
-        DateTimeFormatter.ofPattern("H:mm")));
-    String newActivityName = splitActivityNameAndTime(activity.getActivityName());
-    activity.setActivityName(newActivityName);
-    updateUI();
+  public void addToActivityHistory(Activity activity) {
+    activities.addElement(new ActivityListItem(activity, LocalDateTime.now()));
   }
 
   public void showActivityInfo(String activityInfo) {
-    taActivityInfo.setText(activityInfo);
+    activityInfoPanel.setText(activityInfo);
   }
 
   public ImageIcon createActivityIcon(Activity activity) {
@@ -246,9 +224,9 @@ public class AppPanel extends JPanel {
       }
       case JOptionPane.YES_OPTION -> {
         activity.setCompleted(true);
-        updateActivityList(activity);
+        addToActivityHistory(activity);
 
-        int intervalToUse = (int) spnrTimeSelect.getValue(); // TODO: store this somewhere
+        int intervalToUse = (int) timerIntervalSelector.getValue(); // TODO: store this somewhere
         startTimer(intervalToUse);
       }
     }
