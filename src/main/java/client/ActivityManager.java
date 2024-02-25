@@ -72,7 +72,7 @@ public class ActivityManager {
    * @return An ArrayList of {@link Activity} objects
    * @throws RuntimeException if the file could not be read
    * @author Johannes Rosengren
-   * @implNote Requirement F26
+   * @implNote Requirements: F26
    */
   public ArrayList<Activity> readActivitiesFromDisc(String filePath) {
     if (!fileExists(filePath)) {
@@ -109,7 +109,7 @@ public class ActivityManager {
    * @return An ArrayList of {@link Activity} objects
    * @throws RuntimeException if the file could not be read
    * @author Johannes Rosengren
-   * @implNote Requirement F26
+   * @implNote Requirements: F26
    */
   public ArrayList<Activity> readActivitiesFromDisc() {
     return readActivitiesFromDisc(activitiesFilePath);
@@ -164,6 +164,7 @@ public class ActivityManager {
    * @param activityInfo        Information about the activity
    * @return the added {@link Activity} object
    * @author Edvin Topalovic
+   * @implNote Requirements: F011, F33
    */
   public Activity createActivity(String activityName, String activityInstruction,
       String activityInfo) {
@@ -181,6 +182,7 @@ public class ActivityManager {
    * @throws RuntimeException if the activity could not be added to the activity register
    * @author Edvin Topalovic
    * @author Johannes Rosengren
+   * @implNote Requirements: F011, F33
    */
   public Activity createActivity(String activityName, String activityInstruction,
       String activityInfo, String imagePath) {
@@ -204,6 +206,10 @@ public class ActivityManager {
     return savedActivity.get();
   }
 
+  /**
+   * @param activity The activity to be postponed.
+   * @implNote Requirements: F010b
+   */
   public void enqueueActivity(Activity activity) {
     postponedActivities.add(activity);
   }
@@ -220,7 +226,7 @@ public class ActivityManager {
    * @throws RuntimeException if the file could not be created or written to
    * @author Edvin Topalovic
    * @author Johannes Rosengren
-   * @implNote Requirement F25
+   * @implNote Requirements: F25
    */
   public void saveActivitiesToDisc(String filePath) {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -252,7 +258,7 @@ public class ActivityManager {
    * @throws RuntimeException if the file could not be created or written to
    * @author Edvin Topalovic
    * @author Johannes Rosengren
-   * @implNote Requirement F25
+   * @implNote Requirements: F25
    */
   public void saveActivitiesToDisc() {
     saveActivitiesToDisc(activitiesFilePath);

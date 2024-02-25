@@ -60,6 +60,7 @@ public class ClientController {
    * @param activityInstruction The instruction for the activity.
    * @param activityInfo        The information for the activity.
    * @return The {@link Activity} that was added.
+   * @implNote Requirements: F011, F33
    */
   public Activity addActivity(String activityName, String activityInstruction,
       String activityInfo) {
@@ -72,6 +73,7 @@ public class ClientController {
    * @param activityInfo        The information for the activity.
    * @param imagePath           The path to the image for the activity.
    * @return The {@link Activity} that was added.
+   * @implNote Requirements: F011, F33
    */
   public Activity addActivity(String activityName, String activityInstruction,
       String activityInfo, String imagePath) {

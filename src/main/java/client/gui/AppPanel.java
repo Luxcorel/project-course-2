@@ -45,14 +45,14 @@ public class AppPanel extends JPanel {
   private final MainPanel mainPanel;
   private final ClientController clientController;
 
-  // west or left panel and its components
+  // left panel and its components
   private JPanel west;
   private JSpinner timerIntervalSelector;
   private JButton startTimer;
   private JLabel timeLeft;
-  private JButton addCustomExercise;
+  private JButton addCustomActivity;
 
-  // center "panel" and its components
+  // center panel and its components
   private JList<ActivityListItem> activityHistory;
   private DefaultListModel<ActivityListItem> activities;
 
@@ -61,10 +61,10 @@ public class AppPanel extends JPanel {
 
   private final Color clrPanels = new Color(142, 166, 192);
 
-  // timer thread keeping track of the time left until the next activity notification should appear
+  // timer keeping track of the time left until the next activity notification should appear
   private Timer timer;
-  private int timeLeftInSeconds; // time left in seconds until the next activity notification
-  private int chosenMinuteInterval;
+  private int timeLeftInSeconds; // seconds left until the next activity notification should appear
+  private int chosenMinuteInterval; // this value is used whenever a new timer is started.
 
   public AppPanel(MainPanel mainPanel, ClientController clientController) {
     this.mainPanel = mainPanel;
@@ -118,24 +118,19 @@ public class AppPanel extends JPanel {
     startTimer.addActionListener((event) -> {
       startTimer.setText("Ändra intervall");
 
-      chosenMinuteInterval = (int) timerIntervalSelector.getValue();
-
-      clientController.setTitle(
-          chosenMinuteInterval == 1 ?
-              "EDIM | Aktivt tidsintervall: " + chosenMinuteInterval + " minut"
-              : "EDIM | Aktivt tidsintervall: " + chosenMinuteInterval + " minuter"
-      );
+      int minutes = (int) timerIntervalSelector.getValue();
+      setTimerInterval(minutes);
 
       startTimer(chosenMinuteInterval);
     });
     centerPnl.add(startTimer, BorderLayout.SOUTH);
 
-    JPanel customExercisePanel = new JPanel();
-    customExercisePanel.setBackground(clrPanels);
+    JPanel customActivityPanel = new JPanel();
+    customActivityPanel.setBackground(clrPanels);
 
-    addCustomExercise = new JButton("Lägg till ny övning");
-    addCustomExercise.addActionListener(event -> {
-      addCustomExercise.setEnabled(false);
+    addCustomActivity = new JButton("Lägg till ny övning");
+    addCustomActivity.addActionListener(event -> {
+      addCustomActivity.setEnabled(false);
 
       Optional<Activity> activityOptional = addCustomActivity();
       if (activityOptional.isPresent()) {
@@ -143,17 +138,33 @@ public class AppPanel extends JPanel {
         JOptionPane.showMessageDialog(this, "Ny aktivitet tillagd: " + activity.getActivityName());
       }
 
-      addCustomExercise.setEnabled(true);
+      addCustomActivity.setEnabled(true);
     });
-    customExercisePanel.add(addCustomExercise);
+    customActivityPanel.add(addCustomActivity);
 
-    west.add(customExercisePanel, BorderLayout.PAGE_START);
+    west.add(customActivityPanel, BorderLayout.PAGE_START);
     west.add(centerPnl, BorderLayout.CENTER);
     west.add(timeLeft, BorderLayout.SOUTH);
   }
 
   /**
-   * Prompts the user to add a new activity to the list of activities.
+   * Sets the minute interval for the timer and sets the title of the frame to the new interval.
+   * This value is used whenever the timer is restarted.
+   *
+   * @param minutes the timer interval in minutes
+   */
+  public void setTimerInterval(int minutes) {
+    this.chosenMinuteInterval = minutes;
+
+    clientController.setTitle(
+        chosenMinuteInterval == 1 ?
+            "EDIM | Aktivt tidsintervall: " + chosenMinuteInterval + " minut"
+            : "EDIM | Aktivt tidsintervall: " + chosenMinuteInterval + " minuter"
+    );
+  }
+
+  /**
+   * Opens a new window with a form for the user to add a new activity.
    *
    * @return an Optional containing the new activity if the user added one, or an empty Optional if
    * the user canceled the operation or if the input was invalid.
@@ -340,6 +351,7 @@ public class AppPanel extends JPanel {
    * Shows a notification with the given activity.
    *
    * @param activity the activity to show a notification for
+   * @implNote Requirements: F010a
    */
   public void showNotification(Activity activity) {
     Toolkit.getDefaultToolkit().beep();
