@@ -11,10 +11,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * The InspirationalQuotes class provides a method to fetch inspirational quotes from the ZenQuotes API.
+ */
 public class InspirationalQuotes {
   private static final String API_URL = "https://zenquotes.io/api/random";
 
-  public JsonObject getQuote() {
+  /**
+   * Fetches a random inspirational quote from the ZenQuotes API.
+   *
+   * @return A JsonObject representing the quote. The object includes details such as the quote text and author.
+   *         Returns null if an exception occurs during the API request.
+   */
+  public JsonObject getRandomQuote() {
     StringBuilder result = new StringBuilder();
 
     try {

@@ -261,7 +261,7 @@ public class AppPanel extends JPanel {
     Image newImg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
     InspirationalQuotes quotes = new InspirationalQuotes();
-    JsonObject quoteJson = quotes.getQuote();
+    JsonObject quoteJson = quotes.getRandomQuote();
     String quote = quoteJson.get("q").getAsString();
     String author = quoteJson.get("a").getAsString();
 
