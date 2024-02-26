@@ -400,7 +400,7 @@ public class AppPanel extends JPanel {
     String quote = quoteJson.get("q").getAsString();
     String author = quoteJson.get("a").getAsString();
 
-    JOptionPane.showMessageDialog(null, String.format("%s\n- %s", quote, author),
+    JOptionPane.showMessageDialog(null, String.format("%s\n- %s", quote, author));
   }
 
 }
