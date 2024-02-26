@@ -1,7 +1,7 @@
 package client;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Objects;
 import javax.swing.ImageIcon;
 
 /**
@@ -18,22 +18,15 @@ public class Activity implements Serializable {
   private String activityInstruction;
   private String activityInfo;
   private boolean isCompleted = false;
-  private String activityUser;
-  private ImageIcon activityImage;
-  private int activityID;
+  private transient ImageIcon activityImage;
+  private String imagePath;
+  private String activityID;
 
   public Activity(String activityName) {
     this.activityName = activityName;
   }
 
   public Activity() {}
-
-  public String getTime() {
-    Calendar cal = Calendar.getInstance();
-    String datum = cal.getTime().getHours() + ":" + cal.getTime().getMinutes();
-    return datum;
-
-  }
 
   public String getActivityInfo() {
     return activityInfo;
@@ -67,32 +60,91 @@ public class Activity implements Serializable {
     isCompleted = completed;
   }
 
-  public String getActivityUser() {
-    return activityUser;
-  }
-
-  public void setActivityUser(String activityUser) {
-    this.activityUser = activityUser;
-  }
-
   public ImageIcon getActivityImage() {
     return activityImage;
   }
 
-  public void setActivityImage(ImageIcon icon) {
-    activityImage = icon;
+  public void setActivityImage(String imagePath) {
+    if (imagePath == null) {
+      imagePath = "";
+      return;
+    }
+    if (imagePath.isEmpty()) {
+      imagePath = "";
+      return;
+    }
+
+    this.imagePath = imagePath;
+    activityImage = new ImageIcon(imagePath);
+  }
+
+  public String getImagePath() {
+    return imagePath;
   }
 
   public void createActivityImage(String fileName) {
     activityImage = new ImageIcon(fileName);
   }
 
-  public void setActivityID(int activityID) {
+  public void setActivityID(String activityID) {
     this.activityID = activityID;
   }
 
-  public int getActivityID() {
+  public String getActivityID() {
     return activityID;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Activity activity = (Activity) o;
+
+    if (isCompleted != activity.isCompleted) {
+      return false;
+    }
+    if (!Objects.equals(activityName, activity.activityName)) {
+      return false;
+    }
+    if (!Objects.equals(activityInstruction, activity.activityInstruction)) {
+      return false;
+    }
+    if (!Objects.equals(activityInfo, activity.activityInfo)) {
+      return false;
+    }
+    if (!Objects.equals(imagePath, activity.imagePath)) {
+      return false;
+    }
+    return Objects.equals(activityID, activity.activityID);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = activityName != null ? activityName.hashCode() : 0;
+    result = 31 * result + (activityInstruction != null ? activityInstruction.hashCode() : 0);
+    result = 31 * result + (activityInfo != null ? activityInfo.hashCode() : 0);
+    result = 31 * result + (isCompleted ? 1 : 0);
+    result = 31 * result + (imagePath != null ? imagePath.hashCode() : 0);
+    result = 31 * result + (activityID != null ? activityID.hashCode() : 0);
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "Activity{" +
+           "activityName='" + activityName + '\'' +
+           ", activityInstruction='" + activityInstruction + '\'' +
+           ", activityInfo='" + activityInfo + '\'' +
+           ", isCompleted=" + isCompleted +
+           ", activityImage=" + activityImage +
+           ", imagePath='" + imagePath + '\'' +
+           ", activityID='" + activityID + '\'' +
+           '}';
   }
 }
 
