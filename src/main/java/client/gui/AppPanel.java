@@ -61,6 +61,11 @@ public class AppPanel extends JPanel {
   // right panel that shows activity info for the selected activity
   private JTextArea activityInfoPanel;
 
+  // south panel and its components
+  private JPanel south;
+  private JButton logOut;
+  private JButton appInfo;
+
   private final Color clrPanels = new Color(142, 166, 192);
 
   // timer keeping track of the time left until the next activity notification should appear
@@ -85,9 +90,13 @@ public class AppPanel extends JPanel {
     createActivityHistoryList();
     createActivityInfoPanel();
     createIntervalPanel();
+    createOptionsPanel();
 
-    JButton logOut = new JButton("Avsluta");
+    logOut = new JButton("Avsluta");
     logOut.addActionListener((event) -> mainPanel.logOut());
+
+    appInfo = new JButton("Info");
+    //appInfo.addActionListener((event) -> mainPanel.info());
 
     activityHistory.addListSelectionListener(event -> {
       ActivityListItem selectedActivity = activityHistory.getSelectedValue();
@@ -95,7 +104,7 @@ public class AppPanel extends JPanel {
     });
 
     add(activityHistory, BorderLayout.CENTER);
-    add(logOut, BorderLayout.SOUTH);
+    add(south, BorderLayout.SOUTH);
     add(activityInfoPanel, BorderLayout.EAST);
     add(west, BorderLayout.WEST);
   }
@@ -147,6 +156,25 @@ public class AppPanel extends JPanel {
     west.add(customActivityPanel, BorderLayout.PAGE_START);
     west.add(centerPnl, BorderLayout.CENTER);
     west.add(timeLeft, BorderLayout.SOUTH);
+  }
+
+  private void createOptionsPanel() {
+
+    logOut = new JButton("Avsluta");
+    logOut.addActionListener((event) -> mainPanel.logOut());
+
+    appInfo = new JButton("Info");
+    appInfo.addActionListener((event) -> mainPanel.info());
+
+    south = new JPanel();
+    south.setLayout(new GridLayout(1, 2));
+    south.setBackground(clrPanels);
+    south.setBorder(
+        BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.LIGHT_GRAY, Color.LIGHT_GRAY));
+
+    south.add(appInfo);
+    south.add(logOut);
+
   }
 
   /**
