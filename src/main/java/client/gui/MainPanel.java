@@ -28,6 +28,9 @@ public class MainPanel extends JPanel {
     mainFrame.logOut();
   }
 
+  /**
+   * Displays an informational dialog about Edim.
+   */
   public void info() {
     String info = """
         Edim skickar notiser till dig med jämna mellanrum, notisen innehåller en fysisk aktivitet som ska utföras för att hålla igång blodcirkulationen i din kropp.
