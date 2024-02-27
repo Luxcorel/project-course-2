@@ -19,7 +19,7 @@ public class MainPanel extends JPanel {
     backGroundColor = new Color(134, 144, 154, 145); //64, 87, 139
     setSize(new Dimension(819, 438));
     setBackground(backGroundColor);
-    setBorder(BorderFactory.createTitledBorder("Välkommen!"));
+    setBorder(BorderFactory.createTitledBorder("Welcome!"));
     appPanel = new AppPanel(this, clientController);
     add(appPanel);
   }
@@ -33,8 +33,8 @@ public class MainPanel extends JPanel {
    */
   public void info() {
     String info = """
-        Edim skickar notiser till dig med jämna mellanrum, notisen innehåller en fysisk aktivitet som ska utföras för att hålla igång blodcirkulationen i din kropp.
-        Hur ofta du vill ha dessa notiser kan du ställa in själv.
+        Edim will send you notifications at regular intervals, each notification contains a physical activity designed to promote healthy blood circulation in your body. 
+        The frequency of these alerts can be customized according to your preference.
         """;
 
     String infoMessage =
