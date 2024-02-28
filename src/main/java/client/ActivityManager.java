@@ -1,3 +1,4 @@
+
 package client;
 
 import com.google.gson.Gson;
@@ -11,6 +12,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.UUID;
 
 /**
@@ -22,6 +25,7 @@ import java.util.UUID;
 public class ActivityManager {
   private final String activitiesFilePath;
   private final ArrayList<Activity> activityRegister;
+  private final Queue<Activity> postponedActivities;
 
   /**
    * The specified file path will be used to read and write activities to and from a file.
@@ -32,6 +36,7 @@ public class ActivityManager {
     this.activitiesFilePath = activitiesFilePath;
 
     this.activityRegister = readActivitiesFromDisc(activitiesFilePath);
+    postponedActivities = new LinkedList<>();
   }
 
   /**
@@ -113,12 +118,17 @@ public class ActivityManager {
   /**
    * Method returns random {@link Activity}-object from {@link #activityRegister}
    * Randomization is achieved by shuffling the list.
-   * @author Edvin Topalovic
+   *
    * @return {@link Activity}-object
+   * @author Edvin Topalovic
    */
   public Activity getActivity() {
+    if (!postponedActivities.isEmpty()) {
+      return postponedActivities.remove();
+    }
+
     Collections.shuffle(activityRegister);
-    return activityRegister.get(0);
+    return activityRegister.getFirst();
   }
 
   /**
@@ -176,6 +186,14 @@ public class ActivityManager {
     saveActivitiesToDisc(activitiesFilePath);
 
     return getActivity(activity.getActivityID());
+  }
+
+  public void enqueueActivity(Activity activity) {
+    postponedActivities.add(activity);
+  }
+
+  public Queue<Activity> getPostponedActivities() {
+    return postponedActivities;
   }
 
   /**
