@@ -30,8 +30,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * This is the panel in the frame that contains pretty much all of the components in the GUI.
@@ -172,10 +174,10 @@ public class AppPanel extends JPanel {
    * @implNote Requirements: F011, F33
    */
   public Optional<Activity> addCustomActivity() {
-    JLabel nameLabel = new JLabel("Namn:");
+    JLabel nameLabel = new JLabel("Name:");
     JTextField nameInput = new JTextField(1);
 
-    JLabel instructionLabel = new JLabel("Instruktioner:");
+    JLabel instructionLabel = new JLabel("Instructions:");
     JTextArea instructionInput = new JTextArea(5,20);
     instructionInput.setLineWrap(true);
     JScrollPane instructionInputScrollPane = new JScrollPane(instructionInput);
@@ -185,19 +187,34 @@ public class AppPanel extends JPanel {
     infoInput.setLineWrap(true);
     JScrollPane infoInputScrollPane = new JScrollPane(infoInput);
 
-    JLabel imagePathLabel = new JLabel("Bild (valfritt):");
+    JLabel imagePathLabel = new JLabel("Image (optional):");
     JTextField imagePathInput = new JTextField();
+    JLabel chosenImage = new JLabel();
+    chosenImage.setPreferredSize(new Dimension(200, 200));
+    chosenImage.setText("No image selected");
+    chosenImage.setHorizontalAlignment(SwingConstants.CENTER);
+    chosenImage.setVerticalAlignment(SwingConstants.CENTER);
 
-    JButton imageBrowser = new JButton("Välj bild");
+    JButton imageBrowser = new JButton("Choose image");
     imageBrowser.addActionListener(event -> {
       JFileChooser fileChooser = new JFileChooser();
+
       int option = fileChooser.showOpenDialog(this);
       if (option == JFileChooser.APPROVE_OPTION) {
-        imagePathInput.setText(fileChooser.getSelectedFile().getAbsolutePath());
+        String chosenFile = fileChooser.getSelectedFile().getAbsolutePath();
+        imagePathInput.setText(chosenFile);
+
+        ImageIcon imageIcon = new ImageIcon(chosenFile);
+        Image image = imageIcon.getImage();
+        Image scaledImage = image.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        imageIcon = new ImageIcon(scaledImage);
+        chosenImage.setText("");
+        chosenImage.setIcon(imageIcon);
       }
     });
 
     JPanel addCustomActivityPanel = new JPanel(new BorderLayout());
+    addCustomActivityPanel.setPreferredSize(new Dimension(500, 500));
 
     JPanel labels = new JPanel(new GridLayout(4, 1, 5, 5));
     labels.add(nameLabel);
@@ -213,7 +230,11 @@ public class AppPanel extends JPanel {
     inputs.add(imageBrowser);
     addCustomActivityPanel.add(inputs, BorderLayout.EAST);
 
-    int option = JOptionPane.showConfirmDialog(this, addCustomActivityPanel, "Lägg till ny övning",
+    JPanel imagePreviewPanel = new JPanel();
+    imagePreviewPanel.add(chosenImage);
+    addCustomActivityPanel.add(imagePreviewPanel, BorderLayout.SOUTH);
+
+    int option = JOptionPane.showConfirmDialog(this, addCustomActivityPanel, "Add new activity",
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
     if (option != JOptionPane.OK_OPTION) {
       return Optional.empty();
@@ -224,9 +245,8 @@ public class AppPanel extends JPanel {
     String activityInfo = infoInput.getText();
     String imagePath = imagePathInput.getText();
     if (activityName.isBlank() || activityInstruction.isBlank() || activityInfo.isBlank()) {
-      JOptionPane.showMessageDialog(this,
-          "Alla textfält måste vara ifyllda för att lägga till en ny övning!", "Information saknas",
-          JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, "All text-fields are required to add a new activity!",
+          "Required information missing", JOptionPane.ERROR_MESSAGE);
       return Optional.empty();
     }
 
