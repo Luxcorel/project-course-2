@@ -248,6 +248,11 @@ public class AppPanel extends JPanel {
     String activityInfo = infoInput.getText();
     String imagePath = imagePathInput.getText();
     while (activityName.isBlank() || activityInstruction.isBlank() || activityInfo.isBlank()) {
+      LineBorder error = new LineBorder(Color.RED);
+      nameInput.setBorder(activityName.isBlank() ? error : null);
+      instructionInput.setBorder(activityInstruction.isBlank() ? error : null);
+      infoInput.setBorder(activityInfo.isBlank() ? error : null);
+
       JOptionPane.showMessageDialog(this, "All text-fields are required to add a new activity!",
           "Required information missing", JOptionPane.ERROR_MESSAGE);
 
