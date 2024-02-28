@@ -247,7 +247,7 @@ public class AppPanel extends JPanel {
     String activityInstruction = instructionInput.getText();
     String activityInfo = infoInput.getText();
     String imagePath = imagePathInput.getText();
-    while (activityName.isBlank() || activityInstruction.isBlank() || activityInfo.isBlank()) {
+    while (!isValidInput(activityName, activityInstruction, activityInfo)) {
       LineBorder error = new LineBorder(Color.RED);
       nameInput.setBorder(activityName.isBlank() ? error : null);
       instructionInput.setBorder(activityInstruction.isBlank() ? error : null);
@@ -277,6 +277,11 @@ public class AppPanel extends JPanel {
     return Optional.of(
         clientController.addActivity(activityName, activityInstruction, activityInfo, imagePath)
     );
+  }
+
+  private static boolean isValidInput(String activityName, String activityInstruction,
+      String activityInfo) {
+    return !activityName.isBlank() && !activityInstruction.isBlank() && !activityInfo.isBlank();
   }
 
   /**
