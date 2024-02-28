@@ -198,6 +198,8 @@ public class AppPanel extends JPanel {
     JButton imageBrowser = new JButton("Choose image");
     imageBrowser.addActionListener(event -> {
       JFileChooser fileChooser = new JFileChooser();
+      FileNameExtensionFilter filter = new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png");
+      fileChooser.setFileFilter(filter);
 
       int option = fileChooser.showOpenDialog(this);
       if (option == JFileChooser.APPROVE_OPTION) {
