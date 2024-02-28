@@ -33,6 +33,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -246,10 +247,20 @@ public class AppPanel extends JPanel {
     String activityInstruction = instructionInput.getText();
     String activityInfo = infoInput.getText();
     String imagePath = imagePathInput.getText();
-    if (activityName.isBlank() || activityInstruction.isBlank() || activityInfo.isBlank()) {
+    while (activityName.isBlank() || activityInstruction.isBlank() || activityInfo.isBlank()) {
       JOptionPane.showMessageDialog(this, "All text-fields are required to add a new activity!",
           "Required information missing", JOptionPane.ERROR_MESSAGE);
-      return Optional.empty();
+
+      option = JOptionPane.showConfirmDialog(this, addCustomActivityPanel, "Add new activity",
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+      if (option != JOptionPane.OK_OPTION) {
+        return Optional.empty();
+      }
+
+      activityName = nameInput.getText();
+      activityInstruction = instructionInput.getText();
+      activityInfo = infoInput.getText();
+      imagePath = imagePathInput.getText();
     }
 
     if (imagePath == null || imagePath.isBlank()) {
