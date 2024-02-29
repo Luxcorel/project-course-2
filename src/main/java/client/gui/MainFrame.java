@@ -18,8 +18,14 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public class MainFrame extends JFrame {
 
+  private static MainFrame instance;
+
   private ClientController clientController;
   private MainPanel mainPanel;
+
+  public static MainFrame getInstance() {
+    return instance;
+  }
 
   /**
    * Receives a clientController object and opens call for the method which opens a GUI window.
@@ -28,6 +34,7 @@ public class MainFrame extends JFrame {
    */
   public MainFrame(ClientController clientController) {
     this.clientController = clientController;
+    instance = this;
 
     //Oscars test:
     try {
