@@ -82,6 +82,39 @@ public class ClientController {
   }
 
   /**
+   * Method packages activity attributes into an {@link Activity} object.
+   *
+   * @param activityName        Name of the activity
+   * @param activityInstruction Instructions for the activity
+   * @param activityInfo        Information about the activity
+   * @param imagePath           Optionally path to the image for the activity
+   * @return the packaged {@link Activity} object
+   */
+  public Activity packageActivity(String activityName, String activityInstruction,
+      String activityInfo, String imagePath) {
+    if (imagePath == null || imagePath.isBlank()) {
+      return packageActivity(activityName, activityInstruction, activityInfo);
+    }
+
+    return ActivityManager.packageActivity(activityName, activityInstruction, activityInfo,
+        imagePath);
+  }
+
+  /**
+   * Method packages activity attributes into an {@link Activity} object.
+   *
+   * @param activityName        Name of the activity
+   * @param activityInstruction Instructions for the activity
+   * @param activityInfo        Information about the activity
+   * @return the packaged {@link Activity} object
+   * @throws RuntimeException if the fields are missing
+   */
+  public Activity packageActivity(String activityName, String activityInstruction,
+      String activityInfo) {
+    return ActivityManager.packageActivity(activityName, activityInstruction, activityInfo);
+  }
+
+  /**
    * Changes the main frame's title.
    *
    * @param title The new title of the main frame.

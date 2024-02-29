@@ -143,8 +143,9 @@ public class CustomActivityUI {
    * Opens a new window with a form for the user to add a new activity. Adds the new activity using
    * the client controller.
    *
-   * @return an Optional containing the new activity if the user added one, or an empty Optional if
-   * the user canceled the operation or if the input was invalid.
+   * @return an Optional containing the new activity if the user submitted the form with all
+   * required values, or an empty Optional if the user canceled the operation or if the input was
+   * invalid.
    * @author Johannes Rosengren
    * @implNote Requirements: F011, F33
    */
@@ -193,7 +194,60 @@ public class CustomActivityUI {
         clientController.addActivity(activityName, activityInstruction, activityInfo, imagePath));
   }
 
-  
+  /**
+   * Opens a new window with a form for the user to create a new activity. Returns the new activity
+   * when the user submits the form.
+   *
+   * @return an Optional containing the new activity if the user submitted the form with all
+   * required values, or an empty Optional if the user canceled.
+   * @author Johannes Rosengren
+   * @implNote Requirements: F011, F33
+   */
+  public Optional<Activity> getCustomActivity() {
+    int option = JOptionPane.showConfirmDialog(parentComponent, customActivityPanel,
+        "Add new activity",
+        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+    if (option != JOptionPane.OK_OPTION) {
+      return Optional.empty();
+    }
+
+    String activityName = nameInput.getText();
+    String activityInstruction = instructionInput.getText();
+    String activityInfo = infoInput.getText();
+    String imagePath = imagePathInput.getText();
+
+    while (!isValidInput(activityName, activityInstruction, activityInfo)) {
+      LineBorder error = new LineBorder(Color.RED);
+      nameInput.setBorder(nameInput.getText().isBlank() ? error : null);
+      instructionInput.setBorder(instructionInput.getText().isBlank() ? error : null);
+      infoInput.setBorder(infoInput.getText().isBlank() ? error : null);
+
+      JOptionPane.showMessageDialog(parentComponent,
+          "All text fields are required to add a new activity!", "Required information missing",
+          JOptionPane.ERROR_MESSAGE);
+
+      option = JOptionPane.showConfirmDialog(parentComponent, customActivityPanel,
+          "Add new activity",
+          JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+      if (option != JOptionPane.OK_OPTION) {
+        return Optional.empty();
+      }
+
+      activityName = nameInput.getText();
+      activityInstruction = instructionInput.getText();
+      activityInfo = infoInput.getText();
+      imagePath = imagePathInput.getText();
+    }
+
+    if (imagePath == null || imagePath.isBlank()) {
+      return Optional.of(
+          clientController.packageActivity(activityName, activityInstruction, activityInfo));
+    }
+
+    return Optional.of(
+        clientController.packageActivity(activityName, activityInstruction, activityInfo,
+            imagePath));
+  }
 
   /**
    * Opens a file chooser for the user to select an image file.
