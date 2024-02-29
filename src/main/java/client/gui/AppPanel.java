@@ -122,9 +122,9 @@ public class AppPanel extends JPanel {
     centerPnl.setBackground(clrPanels);
     centerPnl.add(timerIntervalSelector);
 
-    startTimer = new JButton("Starta timer");
+    startTimer = new JButton("Start Timer");
     startTimer.addActionListener((event) -> {
-      startTimer.setText("Ändra intervall");
+      startTimer.setText("Change Interval");
 
       int minutes = (int) timerIntervalSelector.getValue();
       setTimerInterval(minutes);
@@ -136,14 +136,14 @@ public class AppPanel extends JPanel {
     JPanel customActivityPanel = new JPanel();
     customActivityPanel.setBackground(clrPanels);
 
-    addCustomActivity = new JButton("Lägg till ny övning");
+    addCustomActivity = new JButton("Add New Activity");
     addCustomActivity.addActionListener(event -> {
       addCustomActivity.setEnabled(false);
 
       Optional<Activity> activityOptional = addCustomActivity();
       if (activityOptional.isPresent()) {
         Activity activity = activityOptional.get();
-        JOptionPane.showMessageDialog(this, "Ny aktivitet tillagd: " + activity.getActivityName());
+        JOptionPane.showMessageDialog(this, "New Activity Added: " + activity.getActivityName());
       }
 
       addCustomActivity.setEnabled(true);
@@ -157,7 +157,7 @@ public class AppPanel extends JPanel {
 
   private void createOptionsPanel() {
 
-    logOut = new JButton("Avsluta");
+    logOut = new JButton("Exit");
     logOut.addActionListener((event) -> mainPanel.logOut());
 
     appInfo = new JButton("Info");
@@ -185,8 +185,8 @@ public class AppPanel extends JPanel {
 
     clientController.setTitle(
         chosenMinuteInterval == 1 ?
-            "EDIM | Aktivt tidsintervall: " + chosenMinuteInterval + " minut"
-            : "EDIM | Aktivt tidsintervall: " + chosenMinuteInterval + " minuter"
+            "EDIM | Active Time Interval: " + chosenMinuteInterval + " Minute"
+            : "EDIM | Active Time Interval: " + chosenMinuteInterval + " Minutes"
     );
   }
 
@@ -225,16 +225,16 @@ public class AppPanel extends JPanel {
         int seconds = timeLeftInSeconds % 60;
 
         if (timeLeftInSeconds == 0) {
-          String time = String.format("timer: %d:%02d", minutes, seconds);
+          String time = String.format("Timer: %d:%02d", minutes, seconds);
           timeLeft.setText(time);
           SwingUtilities.invokeLater(
               () -> {
                 Optional<Activity> activity = clientController.getActivity();
                 if (activity.isEmpty()) {
                   JOptionPane.showMessageDialog(AppPanel.this,
-                      "Hittade inga sparade aktiviteter! Lägg till en aktivitet innan du startar timern.",
-                      "Inga aktiviteter hittades", JOptionPane.ERROR_MESSAGE);
-                  startTimer.setText("Starta timer");
+                      "Could not find any saved activities! Add a new activity before you start the timer.",
+                      "No Activities Found", JOptionPane.ERROR_MESSAGE);
+                  startTimer.setText("Start Timer");
                   return;
                 }
 
@@ -245,7 +245,7 @@ public class AppPanel extends JPanel {
 
         timeLeftInSeconds--;
 
-        String time = String.format("timer: %d:%02d", minutes, seconds);
+        String time = String.format("Timer: %d:%02d", minutes, seconds);
         timeLeft.setText(time);
       }
     }, 0, 1000);
@@ -266,7 +266,7 @@ public class AppPanel extends JPanel {
     activities = new DefaultListModel<>();
     activityHistory = new JList<>(activities);
     activityHistory.setPreferredSize(new Dimension(400, 320));
-    activityHistory.setBorder(BorderFactory.createTitledBorder("Avklarade aktiviteter"));
+    activityHistory.setBorder(BorderFactory.createTitledBorder("Completed Activities"));
     activityHistory.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
     Font font = new Font("SansSerif", Font.PLAIN, 14);
     activityHistory.setFont(font);
@@ -318,7 +318,7 @@ public class AppPanel extends JPanel {
   public void showNotification(Activity activity) {
     Toolkit.getDefaultToolkit().beep();
     ImageIcon activityIcon = activity.getActivityImage().isPresent() ? createActivityIcon(activity) : null;
-    String[] buttons = {"Jag har gjort aktiviteten!", "Påminn mig om fem minuter",};
+    String[] buttons = {"I have completed the activity!", "Remind me in 5 minutes",};
     String instruction = activity.getActivityInstruction();
 
     // HTML formatted message for line breaks in JOptionPane
