@@ -369,6 +369,10 @@ public class AppPanel extends JPanel {
 
     InspirationalQuotes quotes = new InspirationalQuotes();
     JsonObject quoteJson = quotes.getRandomQuote();
+    if (quoteJson == null) {
+      return;
+    }
+
     String quote = quoteJson.get("q").getAsString();
     String author = quoteJson.get("a").getAsString();
 
