@@ -186,13 +186,7 @@ public class ActivityManager {
    */
   public Activity createActivity(String activityName, String activityInstruction,
       String activityInfo, String imagePath) {
-    Activity activity = new Activity();
-
-    activity.setActivityID(UUID.randomUUID().toString());
-    activity.setActivityName(activityName);
-    activity.setActivityInstruction(activityInstruction);
-    activity.setActivityInfo(activityInfo);
-    activity.setActivityImage(imagePath);
+    Activity activity = packageActivity(activityName, activityInstruction, activityInfo, imagePath);
 
     activityRegister.add(activity);
     saveActivitiesToDisc(activitiesFilePath);
@@ -204,6 +198,41 @@ public class ActivityManager {
     }
 
     return savedActivity.get();
+  }
+
+  /**
+   * Method packages activity attributes into an {@link Activity} object.
+   *
+   * @param activityName        Name of the activity
+   * @param activityInstruction Instructions for the activity
+   * @param activityInfo        Information about the activity
+   * @param imagePath           Optionally path to the image for the activity
+   * @return the packaged {@link Activity} object
+   */
+  public static Activity packageActivity(String activityName, String activityInstruction,
+      String activityInfo, String imagePath) {
+    Activity activity = new Activity();
+
+    activity.setActivityID(UUID.randomUUID().toString());
+    activity.setActivityName(activityName);
+    activity.setActivityInstruction(activityInstruction);
+    activity.setActivityInfo(activityInfo);
+    activity.setActivityImage(imagePath);
+
+    return activity;
+  }
+
+  /**
+   * Method packages activity attributes into an {@link Activity} object.
+   *
+   * @param activityName        Name of the activity
+   * @param activityInstruction Instructions for the activity
+   * @param activityInfo        Information about the activity
+   * @return the packaged {@link Activity} object
+   */
+  public static Activity packageActivity(String activityName, String activityInstruction,
+      String activityInfo) {
+    return packageActivity(activityName, activityInstruction, activityInfo, "");
   }
 
   /**

@@ -32,8 +32,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * This is the panel in the frame that contains pretty much all of the components in the GUI.
@@ -196,73 +199,8 @@ public class AppPanel extends JPanel {
    * @implNote Requirements: F011, F33
    */
   public Optional<Activity> addCustomActivity() {
-    JLabel nameLabel = new JLabel("Name:");
-    JTextField nameInput = new JTextField(1);
-
-    JLabel instructionLabel = new JLabel("Instructions:");
-    JTextArea instructionInput = new JTextArea(5,20);
-    instructionInput.setLineWrap(true);
-    JScrollPane instructionInputScrollPane = new JScrollPane(instructionInput);
-
-    JLabel infoLabel = new JLabel("Information:");
-    JTextArea infoInput = new JTextArea(5, 20);
-    infoInput.setLineWrap(true);
-    JScrollPane infoInputScrollPane = new JScrollPane(infoInput);
-
-    JLabel imagePathLabel = new JLabel("Image (optional):");
-    JTextField imagePathInput = new JTextField();
-
-    JButton imageBrowser = new JButton("Choose Image");
-    imageBrowser.addActionListener(event -> {
-      JFileChooser fileChooser = new JFileChooser();
-      int option = fileChooser.showOpenDialog(this);
-      if (option == JFileChooser.APPROVE_OPTION) {
-        imagePathInput.setText(fileChooser.getSelectedFile().getAbsolutePath());
-      }
-    });
-
-    JPanel addCustomActivityPanel = new JPanel(new BorderLayout());
-
-    JPanel labels = new JPanel(new GridLayout(4, 1, 5, 5));
-    labels.add(nameLabel);
-    labels.add(instructionLabel);
-    labels.add(infoLabel);
-    labels.add(imagePathLabel);
-    addCustomActivityPanel.add(labels, BorderLayout.WEST);
-
-    JPanel inputs = new JPanel(new GridLayout(4, 1, 5, 5));
-    inputs.add(nameInput);
-    inputs.add(instructionInputScrollPane);
-    inputs.add(infoInputScrollPane);
-    inputs.add(imageBrowser);
-    addCustomActivityPanel.add(inputs, BorderLayout.EAST);
-
-    int option = JOptionPane.showConfirmDialog(this, addCustomActivityPanel, "Add New Activity",
-        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-    if (option != JOptionPane.OK_OPTION) {
-      return Optional.empty();
-    }
-
-    String activityName = nameInput.getText();
-    String activityInstruction = instructionInput.getText();
-    String activityInfo = infoInput.getText();
-    String imagePath = imagePathInput.getText();
-    if (activityName.isBlank() || activityInstruction.isBlank() || activityInfo.isBlank()) {
-      JOptionPane.showMessageDialog(this,
-          "All text fields must be filled to add a new activity!", "Missing Information",
-          JOptionPane.ERROR_MESSAGE);
-      return Optional.empty();
-    }
-
-    if (imagePath == null || imagePath.isBlank()) {
-      return Optional.of(
-          clientController.addActivity(activityName, activityInstruction, activityInfo)
-      );
-    }
-
-    return Optional.of(
-        clientController.addActivity(activityName, activityInstruction, activityInfo, imagePath)
-    );
+    CustomActivityUI customActivityUI = new CustomActivityUI(this, clientController);
+    return customActivityUI.addCustomActivity();
   }
 
   /**
