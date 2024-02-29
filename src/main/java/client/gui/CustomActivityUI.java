@@ -103,11 +103,11 @@ public class CustomActivityUI {
 
     chosenImagePreview = new JLabel();
     chosenImagePreview.setPreferredSize(new Dimension(200, 200));
-    chosenImagePreview.setText("No image selected");
+    chosenImagePreview.setText("No Image Selected");
     chosenImagePreview.setHorizontalAlignment(SwingConstants.CENTER);
     chosenImagePreview.setVerticalAlignment(SwingConstants.CENTER);
 
-    imageBrowser = new JButton("Choose image");
+    imageBrowser = new JButton("Choose Image");
     imageBrowser.addActionListener(event -> chooseImage());
   }
 
@@ -151,7 +151,7 @@ public class CustomActivityUI {
    */
   public Optional<Activity> addCustomActivity() {
     int option = JOptionPane.showConfirmDialog(parentComponent, customActivityPanel,
-        "Add new activity",
+        "Add New Activity",
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
     if (option != JOptionPane.OK_OPTION) {
       return Optional.empty();
@@ -169,7 +169,7 @@ public class CustomActivityUI {
       infoInput.setBorder(infoInput.getText().isBlank() ? error : null);
 
       JOptionPane.showMessageDialog(parentComponent,
-          "All text fields are required to add a new activity!", "Required information missing",
+          "All text fields are required to add a new activity!", "Missing Required Information",
           JOptionPane.ERROR_MESSAGE);
 
       option = JOptionPane.showConfirmDialog(parentComponent, customActivityPanel,
