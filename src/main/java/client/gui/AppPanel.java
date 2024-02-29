@@ -1,6 +1,7 @@
 package client.gui;
 
 import client.Activity;
+import client.ActivityListItem;
 import client.ClientController;
 import client.external.InspirationalQuotes;
 import com.google.gson.JsonObject;
@@ -8,9 +9,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.util.LinkedList;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.BorderFactory;
@@ -18,243 +21,313 @@ import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * This is the panel in the frame that contains pretty much all of the components in the GUI.
  *
  * @author Oscar Kareld, Chanon Borgstrom, Carolin Nordstrom, Edvin Topalovic.
+ * @author Johannes Rosengren
  * @version 1.1
  */
 public class AppPanel extends JPanel {
 
-  private MainPanel mainPanel;
-  private ClientController clientController;
+  private final MainPanel mainPanel;
+  private final ClientController clientController;
 
-  private JLabel lblTimerInfo;
-  private JTextArea taActivityInfo;
-  //private JComboBox cmbTimeLimit;
-  private JSpinner spnrTimeSelect;
-  private LinkedList<Activity> activities;
-  private JList activityList;
+  // left panel and its components
+  private JPanel west;
+  private JSpinner timerIntervalSelector;
+  private JButton startTimer;
+  private JLabel timeLeft;
+  private JButton addCustomActivity;
 
-  private JButton btnLogOut;
-  private JButton btnStartTimer;
-  private JPanel intervalPnl;
-  private JLabel lblInterval;
+  // center panel and its components
+  private JList<ActivityListItem> activityHistory;
+  private DefaultListModel<ActivityListItem> activities;
 
-  private BorderLayout borderLayout = new BorderLayout();
-  private DefaultListModel<String> listModel;
+  // right panel that shows activity info for the selected activity
+  private JTextArea activityInfoPanel;
 
-  private Color clrPanels = new Color(142, 166, 192);
-  private Color clrMidPanel = new Color(127, 140, 151, 151);
+  private final Color clrPanels = new Color(142, 166, 192);
 
+  // timer keeping track of the time left until the next activity notification should appear
   private Timer timer;
-  private int timerInterval;
+  private int timeLeftInSeconds; // seconds left until the next activity notification should appear
+  private int chosenMinuteInterval; // this value is used whenever a new timer is started.
 
   public AppPanel(MainPanel mainPanel, ClientController clientController) {
     this.mainPanel = mainPanel;
     this.clientController = clientController;
 
-    setupPanel();
+    setSize(new Dimension(819, 438));
+    BorderLayout borderLayout = new BorderLayout();
+    setLayout(borderLayout);
+
     createComponents();
-    activities = new LinkedList<>();
+
     showWelcomeMessage();
   }
 
-  public void setupPanel() {
-    setSize(new Dimension(819, 438));
-  }
-
-  public void createComponents() {
-    setLayout(borderLayout);
-
-    createActivityList();
-    createTAActivityInfo();
-    createCBTimeLimit();
+  private void createComponents() {
+    createActivityHistoryList();
+    createActivityInfoPanel();
     createIntervalPanel();
 
-    btnLogOut = new JButton("Avsluta");
+    JButton logOut = new JButton("Avsluta");
+    logOut.addActionListener((event) -> mainPanel.logOut());
 
-    add(activityList, BorderLayout.CENTER);
-    add(btnLogOut, BorderLayout.SOUTH);
-    add(taActivityInfo, BorderLayout.EAST);
-    add(intervalPnl, BorderLayout.WEST);
+    activityHistory.addListSelectionListener(event -> {
+      ActivityListItem selectedActivity = activityHistory.getSelectedValue();
+      showActivityInfo(selectedActivity.completedActivity().getActivityInfo());
+    });
 
-    btnLogOut.addActionListener((event) -> mainPanel.logOut());
-
-    addActivityListener();
+    add(activityHistory, BorderLayout.CENTER);
+    add(logOut, BorderLayout.SOUTH);
+    add(activityInfoPanel, BorderLayout.EAST);
+    add(west, BorderLayout.WEST);
   }
 
-  public void createIntervalPanel() {
-    intervalPnl = new JPanel();
-    intervalPnl.setLayout(new BorderLayout());
-    intervalPnl.setBackground(clrPanels);
-    intervalPnl.setBorder(
+  private void createIntervalPanel() {
+    SpinnerModel spinnerModel = new SpinnerNumberModel(1, 1, 60, 1);
+    timerIntervalSelector = new JSpinner(spinnerModel);
+
+    west = new JPanel();
+    west.setLayout(new BorderLayout());
+    west.setBackground(clrPanels);
+    west.setBorder(
         BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.LIGHT_GRAY, Color.LIGHT_GRAY));
 
-    lblInterval = new JLabel();
-    lblTimerInfo = new JLabel();
+    timeLeft = new JLabel();
     JPanel centerPnl = new JPanel();
-    centerPnl.setSize(new Dimension(intervalPnl.getWidth(), intervalPnl.getHeight()));
+    centerPnl.setSize(new Dimension(west.getWidth(), west.getHeight()));
     centerPnl.setBackground(clrPanels);
-    updateLblInterval();
-    centerPnl.add(spnrTimeSelect);
+    centerPnl.add(timerIntervalSelector);
 
-    btnStartTimer = new JButton("Starta timer");
-    btnStartTimer.addActionListener((event) -> {
-      btnStartTimer.setText("Ändra intervall");
+    startTimer = new JButton("Starta timer");
+    startTimer.addActionListener((event) -> {
+      startTimer.setText("Ändra intervall");
 
-      int intervalToUse = (int) spnrTimeSelect.getValue(); // TODO: store this somewhere
-      updateLblInterval();
+      int minutes = (int) timerIntervalSelector.getValue();
+      setTimerInterval(minutes);
 
-      startTimer(intervalToUse);
+      startTimer(chosenMinuteInterval);
     });
-    centerPnl.add(btnStartTimer, BorderLayout.SOUTH);
+    centerPnl.add(startTimer, BorderLayout.SOUTH);
 
-    intervalPnl.add(lblInterval, BorderLayout.NORTH);
-    intervalPnl.add(centerPnl, BorderLayout.CENTER);
-    intervalPnl.add(lblTimerInfo, BorderLayout.SOUTH);
+    JPanel customActivityPanel = new JPanel();
+    customActivityPanel.setBackground(clrPanels);
+
+    addCustomActivity = new JButton("Lägg till ny övning");
+    addCustomActivity.addActionListener(event -> {
+      addCustomActivity.setEnabled(false);
+
+      Optional<Activity> activityOptional = addCustomActivity();
+      if (activityOptional.isPresent()) {
+        Activity activity = activityOptional.get();
+        JOptionPane.showMessageDialog(this, "Ny aktivitet tillagd: " + activity.getActivityName());
+      }
+
+      addCustomActivity.setEnabled(true);
+    });
+    customActivityPanel.add(addCustomActivity);
+
+    west.add(customActivityPanel, BorderLayout.PAGE_START);
+    west.add(centerPnl, BorderLayout.CENTER);
+    west.add(timeLeft, BorderLayout.SOUTH);
   }
 
-  public void updateLblInterval() {
-    int interval = (int) spnrTimeSelect.getValue();
-    lblInterval.setText("Aktivt tidsintervall: " + interval + " minuter");
+  /**
+   * Sets the minute interval for the timer and sets the title of the frame to the new interval.
+   * This value is used whenever the timer is restarted.
+   *
+   * @param minutes the timer interval in minutes
+   */
+  public void setTimerInterval(int minutes) {
+    this.chosenMinuteInterval = minutes;
+
+    clientController.setTitle(
+        chosenMinuteInterval == 1 ?
+            "EDIM | Aktivt tidsintervall: " + chosenMinuteInterval + " minut"
+            : "EDIM | Aktivt tidsintervall: " + chosenMinuteInterval + " minuter"
+    );
   }
 
-  public void createCBTimeLimit() {
-    SpinnerModel spnrModel = new SpinnerNumberModel(1, 1, 60, 1);
-    spnrTimeSelect = new JSpinner(spnrModel);
+  /**
+   * Opens a new window with a form for the user to add a new activity.
+   *
+   * @return an Optional containing the new activity if the user added one, or an empty Optional if
+   * the user canceled the operation or if the input was invalid.
+   * @author Johannes Rosengren
+   * @implNote Requirements: F011, F33
+   */
+  public Optional<Activity> addCustomActivity() {
+    CustomActivityUI customActivityUI = new CustomActivityUI(this, clientController);
+    return customActivityUI.addCustomActivity();
   }
 
+  /**
+   * Starts a timer with the given number of minutes.
+   * If a timer is already running, it is canceled and a new one is started.
+   * The timer will show a notification when it reaches 0.
+   *
+   * @param minutes the number of minutes to start the timer with
+   * @author Johannes Rosengren
+   */
   public void startTimer(int minutes) {
     if (timer != null) {
       timer.cancel();
     }
 
-    timerInterval = (minutes * 60);
+    timeLeftInSeconds = (minutes * 60);
 
     timer = new Timer();
     timer.scheduleAtFixedRate(new TimerTask() {
       public void run() {
-        int minutes = timerInterval / 60;
-        int seconds = timerInterval % 60;
+        int minutes = timeLeftInSeconds / 60;
+        int seconds = timeLeftInSeconds % 60;
 
-        if (timerInterval == 0) {
+        if (timeLeftInSeconds == 0) {
           String time = String.format("timer: %d:%02d", minutes, seconds);
-          lblTimerInfo.setText(time);
+          timeLeft.setText(time);
           SwingUtilities.invokeLater(
-              () -> showNotification(clientController.getActivityManager().getActivity()));
+              () -> {
+                Optional<Activity> activity = clientController.getActivity();
+                if (activity.isEmpty()) {
+                  JOptionPane.showMessageDialog(AppPanel.this,
+                      "Hittade inga sparade aktiviteter! Lägg till en aktivitet innan du startar timern.",
+                      "Inga aktiviteter hittades", JOptionPane.ERROR_MESSAGE);
+                  startTimer.setText("Starta timer");
+                  return;
+                }
+
+                showNotification(activity.get());
+              });
           timer.cancel();
         }
 
-        timerInterval--;
+        timeLeftInSeconds--;
 
         String time = String.format("timer: %d:%02d", minutes, seconds);
-        lblTimerInfo.setText(time);
+        timeLeft.setText(time);
       }
-    }, 1000, 1000);
+    }, 0, 1000);
   }
 
-  public void createTAActivityInfo() {
-    taActivityInfo = new JTextArea();
-    taActivityInfo.setBackground(clrPanels);
-    taActivityInfo.setPreferredSize(new Dimension(200, 80));
-    taActivityInfo.setLineWrap(true);
-    taActivityInfo.setWrapStyleWord(true);
+  private void createActivityInfoPanel() {
+    activityInfoPanel = new JTextArea();
+    activityInfoPanel.setBackground(clrPanels);
+    activityInfoPanel.setPreferredSize(new Dimension(200, 80));
+    activityInfoPanel.setLineWrap(true);
+    activityInfoPanel.setWrapStyleWord(true);
     Font font = new Font("SansSerif", Font.PLAIN, 14); //Sarseriff
-    taActivityInfo.setFont(font);
-    taActivityInfo.setEditable(false);
+    activityInfoPanel.setFont(font);
+    activityInfoPanel.setEditable(false);
   }
 
-  public void createActivityList() {
-    listModel = new DefaultListModel<>();
-    activityList = new JList<>(listModel);
-    activityList.setPreferredSize(new Dimension(400, 320));
-    activityList.setBorder(BorderFactory.createTitledBorder("Avklarade aktiviteter"));
-    activityList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+  private void createActivityHistoryList() {
+    activities = new DefaultListModel<>();
+    activityHistory = new JList<>(activities);
+    activityHistory.setPreferredSize(new Dimension(400, 320));
+    activityHistory.setBorder(BorderFactory.createTitledBorder("Avklarade aktiviteter"));
+    activityHistory.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
     Font font = new Font("SansSerif", Font.PLAIN, 14);
-    activityList.setFont(font);
+    activityHistory.setFont(font);
   }
 
-  public void addActivityListener() {
-    activityList.addListSelectionListener(event -> {
-      String activityName = (String) activityList.getSelectedValue();
-      String newActivityName = splitActivityNameAndTime(activityName);
-      for (Activity activity : activities) {
-        if (activity.getActivityName().equals(newActivityName)) {
-          showActivityInfo(activity.getActivityInfo());
-        }
-      }
-    });
+  /**
+   * Adds an activity to the activity history list.
+   * This is only stored in memory and not persisted though application restarts.
+   *
+   * @param activity the activity to add to the activity history list
+   */
+  public void addToActivityHistory(Activity activity) {
+    activities.addElement(new ActivityListItem(activity, LocalDateTime.now()));
   }
 
-  public String splitActivityNameAndTime(String activityName) {
-    activityName = activityName.replaceAll("[0-9]", "");
-    activityName = activityName.replaceAll(":", "");
-    activityName = activityName.replaceAll(" ", "");
-    return activityName;
-  }
-
-  public void updateActivityList(Activity activity) {
-    activities.add(activity);
-    listModel.addElement(activity.getActivityName() + " " + activity.getTime());
-    String newActivityName = splitActivityNameAndTime(activity.getActivityName());
-    activity.setActivityName(newActivityName);
-    updateUI();
-  }
-
+  /**
+   * Shows activity info in the activity info panel on the right side in the GUI.
+   *
+   * @param activityInfo the activity info to show in the activity info panel
+   */
   public void showActivityInfo(String activityInfo) {
-    taActivityInfo.setText(activityInfo);
+    activityInfoPanel.setText(activityInfo);
   }
 
-  public ImageIcon createActivityIcon(Activity activity) {
-    ImageIcon activityIcon = activity.getActivityImage();
+  /**
+   * Creates a scaled ImageIcon of the given activity.
+   *
+   * @param activity the activity to create a scaled icon for
+   * @return a scaled ImageIcon of the activity
+   * @throws IllegalArgumentException if the activity does not have an associated image
+   */
+  private ImageIcon createActivityIcon(Activity activity) throws IllegalArgumentException {
+    if (activity.getActivityImage().isEmpty()) {
+      throw new IllegalArgumentException();
+    }
+
+    ImageIcon activityIcon = activity.getActivityImage().get();
     Image image = activityIcon.getImage();
     Image newImg = image.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
     return new ImageIcon(newImg);
   }
 
+  /**
+   * Shows a notification with the given activity.
+   *
+   * @param activity the activity to show a notification for
+   * @implNote Requirements: F010a
+   */
   public void showNotification(Activity activity) {
     Toolkit.getDefaultToolkit().beep();
-    ImageIcon activityIcon = createActivityIcon(activity);
+    ImageIcon activityIcon = activity.getActivityImage().isPresent() ? createActivityIcon(activity) : null;
     String[] buttons = {"Jag har gjort aktiviteten!", "Påminn mig om fem minuter",};
     String instruction = activity.getActivityInstruction();
-    String[] instructions = new String[3];
 
-    if (instruction.contains("&")) {
-      instructions = instruction.split("&");
-    }
+    // HTML formatted message for line breaks in JOptionPane
+    String instructionMessage =
+        "<html>" +
+          "<body style='width: 300px'>" +
+            instruction +
+          "</body>" +
+        "</html>";
 
-    int answer = WelcomePane.showOptionDialog(null, instructions, activity.getActivityName(),
+    int option = JOptionPane.showOptionDialog(this, instructionMessage, activity.getActivityName(),
         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, activityIcon, buttons, null);
 
-    switch (answer) {
+    switch (option) {
       case JOptionPane.NO_OPTION -> {
-        clientController.getActivityManager().enqueueActivity(activity);
+        clientController.enqueueActivity(activity);
         startTimer(5);
       }
       case JOptionPane.YES_OPTION -> {
         activity.setCompleted(true);
-        updateActivityList(activity);
+        addToActivityHistory(activity);
 
-        int intervalToUse = (int) spnrTimeSelect.getValue(); // TODO: store this somewhere
-        startTimer(intervalToUse);
+        startTimer(chosenMinuteInterval);
       }
     }
 
   }
 
+  /**
+   * TODO: add option to disable this through a settings file
+   */
   public void showWelcomeMessage() {
     ImageIcon welcomeIcon = new ImageIcon("imagesClient/exercise.png");
     Image image = welcomeIcon.getImage();
@@ -267,14 +340,6 @@ public class AppPanel extends JPanel {
 
     JOptionPane.showMessageDialog(null, String.format("%s\n- %s", quote, author),
         "Välkommen till EDIM!", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(newImg));
-  }
-
-  private static class WelcomePane extends JOptionPane {
-
-    @Override
-    public int getMaxCharactersPerLineCount() {
-      return 10;
-    }
   }
 
 }
