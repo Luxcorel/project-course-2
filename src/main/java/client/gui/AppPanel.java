@@ -3,6 +3,8 @@ package client.gui;
 import client.Activity;
 import client.ActivityListItem;
 import client.ClientController;
+import client.external.InspirationalQuotes;
+import com.google.gson.JsonObject;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -62,6 +64,11 @@ public class AppPanel extends JPanel {
   // right panel that shows activity info for the selected activity
   private JTextArea activityInfoPanel;
 
+  // south panel and its components
+  private JPanel south;
+  private JButton logOut;
+  private JButton appInfo;
+
   private final Color clrPanels = new Color(142, 166, 192);
 
   // timer keeping track of the time left until the next activity notification should appear
@@ -86,9 +93,7 @@ public class AppPanel extends JPanel {
     createActivityHistoryList();
     createActivityInfoPanel();
     createIntervalPanel();
-
-    JButton logOut = new JButton("Avsluta");
-    logOut.addActionListener((event) -> mainPanel.logOut());
+    createOptionsPanel();
 
     activityHistory.addListSelectionListener(event -> {
       ActivityListItem selectedActivity = activityHistory.getSelectedValue();
@@ -96,7 +101,7 @@ public class AppPanel extends JPanel {
     });
 
     add(activityHistory, BorderLayout.CENTER);
-    add(logOut, BorderLayout.SOUTH);
+    add(south, BorderLayout.SOUTH);
     add(activityInfoPanel, BorderLayout.EAST);
     add(west, BorderLayout.WEST);
   }
@@ -148,6 +153,25 @@ public class AppPanel extends JPanel {
     west.add(customActivityPanel, BorderLayout.PAGE_START);
     west.add(centerPnl, BorderLayout.CENTER);
     west.add(timeLeft, BorderLayout.SOUTH);
+  }
+
+  private void createOptionsPanel() {
+
+    logOut = new JButton("Avsluta");
+    logOut.addActionListener((event) -> mainPanel.logOut());
+
+    appInfo = new JButton("Info");
+    appInfo.addActionListener((event) -> mainPanel.info());
+
+    south = new JPanel();
+    south.setLayout(new GridLayout(1, 2));
+    south.setBackground(clrPanels);
+    south.setBorder(
+        BorderFactory.createBevelBorder(BevelBorder.LOWERED, Color.LIGHT_GRAY, Color.LIGHT_GRAY));
+
+    south.add(appInfo);
+    south.add(logOut);
+
   }
 
   /**
@@ -331,17 +355,12 @@ public class AppPanel extends JPanel {
     Image image = welcomeIcon.getImage();
     Image newImg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
-    JOptionPane.showMessageDialog(null, """
-            <html>
-              <body style='width: 300px'>
-                <h1>Välkommen!</h1>
-                <p>
-                  EDIM kommer skicka notiser till dig med jämna mellanrum, med en fysisk aktivitet som ska utföras.
-                  Hur ofta du vill ha dessa notiser kan du ställa in själv.
-                </p>
-              </body>
-            </html>
-            """,
+    InspirationalQuotes quotes = new InspirationalQuotes();
+    JsonObject quoteJson = quotes.getRandomQuote();
+    String quote = quoteJson.get("q").getAsString();
+    String author = quoteJson.get("a").getAsString();
+
+    JOptionPane.showMessageDialog(null, String.format("%s\n- %s", quote, author),
         "Välkommen till EDIM!", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(newImg));
   }
 
