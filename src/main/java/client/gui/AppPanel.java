@@ -3,7 +3,10 @@ package client.gui;
 import client.Activity;
 import client.ActivityListItem;
 import client.ClientController;
+import client.OSDetection;
+import client.OSDetection.OS;
 import client.external.InspirationalQuotes;
+import client.notifications.WindowsNotification;
 import com.google.gson.JsonObject;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -234,6 +237,7 @@ public class AppPanel extends JPanel {
                   JOptionPane.showMessageDialog(AppPanel.this,
                       "Could not find any saved activities! Add a new activity before you start the timer.",
                       "No Activities Found", JOptionPane.ERROR_MESSAGE);
+
                   startTimer.setText("Start Timer");
                   return;
                 }
@@ -328,6 +332,11 @@ public class AppPanel extends JPanel {
             instruction +
           "</body>" +
         "</html>";
+
+    if (OSDetection.getOS() == OS.WINDOWS) {
+      WindowsNotification notification = new WindowsNotification();
+      notification.displayNotification("Time To Exercise", "Click to open EDIM");
+    }
 
     int option = JOptionPane.showOptionDialog(this, instructionMessage, activity.getActivityName(),
         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, activityIcon, buttons, null);
