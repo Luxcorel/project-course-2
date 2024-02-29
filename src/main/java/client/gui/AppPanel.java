@@ -95,12 +95,6 @@ public class AppPanel extends JPanel {
     createIntervalPanel();
     createOptionsPanel();
 
-    logOut = new JButton("Avsluta");
-    logOut.addActionListener((event) -> mainPanel.logOut());
-
-    appInfo = new JButton("Info");
-    //appInfo.addActionListener((event) -> mainPanel.info());
-
     activityHistory.addListSelectionListener(event -> {
       ActivityListItem selectedActivity = activityHistory.getSelectedValue();
       showActivityInfo(selectedActivity.completedActivity().getActivityInfo());
