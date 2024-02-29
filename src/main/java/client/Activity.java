@@ -2,12 +2,14 @@ package client;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Optional;
 import javax.swing.ImageIcon;
 
 /**
  * This class handles the information about an Activity object.
  *
  * @author Carolin Nordstrom, Oscar Kareld, Chanon Borgstrom, Sofia Hallberg, Edvin Topalovic.
+ * @author Johannes Rosengren
  * @version 1.1
  */
 
@@ -60,8 +62,8 @@ public class Activity implements Serializable {
     isCompleted = completed;
   }
 
-  public ImageIcon getActivityImage() {
-    return activityImage;
+  public Optional<ImageIcon> getActivityImage() {
+    return Optional.ofNullable(activityImage);
   }
 
   public void setActivityImage(String imagePath) {

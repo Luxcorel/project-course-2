@@ -1,4 +1,3 @@
-
 package client;
 
 import com.google.gson.Gson;
@@ -13,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
 
@@ -72,7 +72,7 @@ public class ActivityManager {
    * @return An ArrayList of {@link Activity} objects
    * @throws RuntimeException if the file could not be read
    * @author Johannes Rosengren
-   * @implNote Requirement F26
+   * @implNote Requirements: F26
    */
   public ArrayList<Activity> readActivitiesFromDisc(String filePath) {
     if (!fileExists(filePath)) {
@@ -109,26 +109,34 @@ public class ActivityManager {
    * @return An ArrayList of {@link Activity} objects
    * @throws RuntimeException if the file could not be read
    * @author Johannes Rosengren
-   * @implNote Requirement F26
+   * @implNote Requirements: F26
    */
   public ArrayList<Activity> readActivitiesFromDisc() {
     return readActivitiesFromDisc(activitiesFilePath);
   }
 
   /**
-   * Method returns random {@link Activity}-object from {@link #activityRegister}
-   * Randomization is achieved by shuffling the list.
+   * Method returns random {@link Activity}-object from {@link #activityRegister} Randomization is
+   * achieved by shuffling the list.
+   * If the activity list is empty, an empty Optional is returned.
    *
    * @return {@link Activity}-object
    * @author Edvin Topalovic
+   * @author Johannes Rosengren
    */
-  public Activity getActivity() {
+  public Optional<Activity> getActivity() {
+    if (activityRegister.isEmpty()) {
+      return Optional.empty();
+    }
+
     if (!postponedActivities.isEmpty()) {
-      return postponedActivities.remove();
+      Activity activity = postponedActivities.remove();
+      return Optional.of(activity);
     }
 
     Collections.shuffle(activityRegister);
-    return activityRegister.getFirst();
+    Activity activity = activityRegister.getFirst();
+    return Optional.of(activity);
   }
 
   /**
@@ -138,13 +146,14 @@ public class ActivityManager {
    * @return {@link Activity}-object
    * @author Edvin Topalovic
    */
-  public Activity getActivity(String id) {
+  public Optional<Activity> getActivity(String id) {
     for (Activity activity : activityRegister) {
       if (activity.getActivityID().equals(id)) {
-        return activity;
+        return Optional.of(activity);
       }
     }
-    return null;
+
+    return Optional.empty();
   }
 
   /**
@@ -155,6 +164,7 @@ public class ActivityManager {
    * @param activityInfo        Information about the activity
    * @return the added {@link Activity} object
    * @author Edvin Topalovic
+   * @implNote Requirements: F011, F33
    */
   public Activity createActivity(String activityName, String activityInstruction,
       String activityInfo) {
@@ -169,10 +179,37 @@ public class ActivityManager {
    * @param activityInfo        Information about the activity
    * @param imagePath           Path to the image for the activity
    * @return the added {@link Activity} object
+   * @throws RuntimeException if the activity could not be added to the activity register
    * @author Edvin Topalovic
    * @author Johannes Rosengren
+   * @implNote Requirements: F011, F33
    */
   public Activity createActivity(String activityName, String activityInstruction,
+      String activityInfo, String imagePath) {
+    Activity activity = packageActivity(activityName, activityInstruction, activityInfo, imagePath);
+
+    activityRegister.add(activity);
+    saveActivitiesToDisc(activitiesFilePath);
+
+    Optional<Activity> savedActivity = getActivity(activity.getActivityID());
+    if (savedActivity.isEmpty()) {
+      throw new RuntimeException(
+          "ActivityManager.createActivity(): Could not add activity to activity register");
+    }
+
+    return savedActivity.get();
+  }
+
+  /**
+   * Method packages activity attributes into an {@link Activity} object.
+   *
+   * @param activityName        Name of the activity
+   * @param activityInstruction Instructions for the activity
+   * @param activityInfo        Information about the activity
+   * @param imagePath           Optionally path to the image for the activity
+   * @return the packaged {@link Activity} object
+   */
+  public static Activity packageActivity(String activityName, String activityInstruction,
       String activityInfo, String imagePath) {
     Activity activity = new Activity();
 
@@ -182,12 +219,26 @@ public class ActivityManager {
     activity.setActivityInfo(activityInfo);
     activity.setActivityImage(imagePath);
 
-    activityRegister.add(activity);
-    saveActivitiesToDisc(activitiesFilePath);
-
-    return getActivity(activity.getActivityID());
+    return activity;
   }
 
+  /**
+   * Method packages activity attributes into an {@link Activity} object.
+   *
+   * @param activityName        Name of the activity
+   * @param activityInstruction Instructions for the activity
+   * @param activityInfo        Information about the activity
+   * @return the packaged {@link Activity} object
+   */
+  public static Activity packageActivity(String activityName, String activityInstruction,
+      String activityInfo) {
+    return packageActivity(activityName, activityInstruction, activityInfo, "");
+  }
+
+  /**
+   * @param activity The activity to be postponed.
+   * @implNote Requirements: F010b
+   */
   public void enqueueActivity(Activity activity) {
     postponedActivities.add(activity);
   }
@@ -204,7 +255,7 @@ public class ActivityManager {
    * @throws RuntimeException if the file could not be created or written to
    * @author Edvin Topalovic
    * @author Johannes Rosengren
-   * @implNote Requirement F25
+   * @implNote Requirements: F25
    */
   public void saveActivitiesToDisc(String filePath) {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -236,7 +287,7 @@ public class ActivityManager {
    * @throws RuntimeException if the file could not be created or written to
    * @author Edvin Topalovic
    * @author Johannes Rosengren
-   * @implNote Requirement F25
+   * @implNote Requirements: F25
    */
   public void saveActivitiesToDisc() {
     saveActivitiesToDisc(activitiesFilePath);
