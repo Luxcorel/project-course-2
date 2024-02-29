@@ -232,7 +232,7 @@ public class AppPanel extends JPanel {
                 Optional<Activity> activity = clientController.getActivity();
                 if (activity.isEmpty()) {
                   JOptionPane.showMessageDialog(AppPanel.this,
-                      "Could not fine any saved activities! Add a new activity before you start the timer.",
+                      "Could not find any saved activities! Add a new activity before you start the timer.",
                       "No Activities Found", JOptionPane.ERROR_MESSAGE);
                   startTimer.setText("Start Timer");
                   return;
