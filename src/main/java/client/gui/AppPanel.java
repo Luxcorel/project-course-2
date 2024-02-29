@@ -334,11 +334,8 @@ public class AppPanel extends JPanel {
         "</html>";
 
     if (OSDetection.getOS() == OS.WINDOWS) {
-      InspirationalQuotes quotes = new InspirationalQuotes();
-      JsonObject quote = quotes.getRandomQuote();
-
       WindowsNotification notification = new WindowsNotification();
-      notification.displayNotification("Time to exercise", quote.get("q").getAsString());
+      notification.displayNotification("Time To Exercise", "Click to open EDIM");
     }
 
     int option = JOptionPane.showOptionDialog(this, instructionMessage, activity.getActivityName(),
