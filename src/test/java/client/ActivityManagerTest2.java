@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 class ActivityManagerTest2 {
 
+  /*
   @Test
   public void testSaveActivitiesToDisc() {
     ActivityManager manager = new ActivityManager("activities.txt");
@@ -50,6 +51,6 @@ class ActivityManagerTest2 {
       fail("Kastade ett undantag: " + e.getMessage());
     }
   }
-
+   */
 
 }

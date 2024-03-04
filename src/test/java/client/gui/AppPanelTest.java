@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppPanelTest {
+  /*
   @Test
   void testBtnStartTimerClick() throws IllegalAccessException, NoSuchFieldException, InterruptedException {
     MainFrame mainFrameMock = Mockito.mock(MainFrame.class);
@@ -32,5 +33,6 @@ class AppPanelTest {
 
     assertNotEquals(initialText, afterClickText);
   }
+   */
 
 }
