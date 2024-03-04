@@ -13,6 +13,9 @@ import org.junit.jupiter.api.condition.EnabledOnOs;
  */
 public class OSDetectionTests {
 
+  /**
+   * Requirements: F29
+   */
   @Test
   @EnabledOnOs(org.junit.jupiter.api.condition.OS.MAC)
   public void getOS_Mac() {
@@ -22,6 +25,9 @@ public class OSDetectionTests {
     assertEquals(expectedOS, actualOS);
   }
 
+  /**
+   * Requirements: F29
+   */
   @Test
   @EnabledOnOs(org.junit.jupiter.api.condition.OS.WINDOWS)
   public void getOS_Windows() {
@@ -30,7 +36,10 @@ public class OSDetectionTests {
 
     assertEquals(expectedOS, actualOS);
   }
-  
+
+  /**
+   * Requirements: F29
+   */
   @Test
   @DisabledOnOs({org.junit.jupiter.api.condition.OS.MAC,
       org.junit.jupiter.api.condition.OS.WINDOWS})
