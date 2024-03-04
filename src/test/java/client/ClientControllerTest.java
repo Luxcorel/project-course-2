@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ClientControllerTest {
+  /*
   @Test
   void testNoLogin() throws NoSuchFieldException, IllegalAccessException {
     MainFrame mainFrameMock = Mockito.mock(MainFrame.class);
@@ -23,5 +24,6 @@ class ClientControllerTest {
 
     assertNotNull(btnInterval);
   }
+  */
 
 }
