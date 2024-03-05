@@ -14,7 +14,7 @@ import org.junit.jupiter.api.condition.EnabledOnOs;
 public class OSDetectionTests {
 
   /**
-   * Test case ID: TC-01.
+   * Test case ID: TC-1.
    * Requirements: F29.
    */
   @Test
@@ -27,7 +27,7 @@ public class OSDetectionTests {
   }
 
   /**
-   * Test case ID: TC-02.
+   * Test case ID: TC-2.
    * Requirements: F29.
    */
   @Test
@@ -40,7 +40,7 @@ public class OSDetectionTests {
   }
 
   /**
-   * Test case ID: TC-03.
+   * Test case ID: TC-3.
    * Requirements: F29.
    */
   @Test
