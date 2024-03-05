@@ -14,7 +14,8 @@ import org.junit.jupiter.api.condition.EnabledOnOs;
 public class OSDetectionTests {
 
   /**
-   * Requirements: F29
+   * Test case ID: TC-01.
+   * Requirements: F29.
    */
   @Test
   @EnabledOnOs(org.junit.jupiter.api.condition.OS.MAC)
@@ -26,7 +27,8 @@ public class OSDetectionTests {
   }
 
   /**
-   * Requirements: F29
+   * Test case ID: TC-02.
+   * Requirements: F29.
    */
   @Test
   @EnabledOnOs(org.junit.jupiter.api.condition.OS.WINDOWS)
@@ -38,7 +40,8 @@ public class OSDetectionTests {
   }
 
   /**
-   * Requirements: F29
+   * Test case ID: TC-03.
+   * Requirements: F29.
    */
   @Test
   @DisabledOnOs({org.junit.jupiter.api.condition.OS.MAC,

@@ -4,10 +4,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ActivityManagerTest {
+public class ActivityManagerTest {
 
+  /**
+   * Test case ID: TC-06.
+   * Requirements: ?.
+   */
   @Test
-  void testCreateActivity() {
+  public void testCreateActivity() {
       String name = "Test name";
       String inst = "Test instruction";
       String info = "Test info";
