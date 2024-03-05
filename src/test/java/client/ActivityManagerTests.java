@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author Johannes Rosengren
+ */
 public class ActivityManagerTests {
 
   // Tests WITHOUT image
@@ -24,6 +27,7 @@ public class ActivityManagerTests {
   /**
    * Test case ID: TC-07.
    * Requirements: F25.
+   * @author Johannes Rosengren
    */
   @Test
   public void saveFileWithoutImage() {
@@ -64,6 +68,7 @@ public class ActivityManagerTests {
   /**
    * Test case ID: TC-08.
    * Requirements: F26, F27.
+   * @author Johannes Rosengren
    */
   @Test
   public void readFileWithoutImage() {
@@ -120,6 +125,7 @@ public class ActivityManagerTests {
   /**
    * Test case ID: TC-09.
    * Requirements: F25, F26, F27.
+   * @author Johannes Rosengren
    */
   @Test
   public void saveAndLoadFileWithoutImage() {
@@ -150,6 +156,7 @@ public class ActivityManagerTests {
   /**
    * Test case ID: TC-10.
    * Requirements: F25.
+   * @author Johannes Rosengren
    */
   @Test
   public void saveFileWithImage() {
@@ -190,6 +197,7 @@ public class ActivityManagerTests {
   /**
    * Test case ID: TC-11.
    * Requirements: F26, F27.
+   * @author Johannes Rosengren
    */
   @Test
   public void readFileWithImage() {
@@ -249,6 +257,7 @@ public class ActivityManagerTests {
   /**
    * Test case ID: TC-12.
    * Requirements: F25, F26, F27.
+   * @author Johannes Rosengren
    */
   @Test
   public void saveAndLoadFileWithImage() {
