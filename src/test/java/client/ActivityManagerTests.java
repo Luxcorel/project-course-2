@@ -108,7 +108,7 @@ public class ActivityManagerTests {
         new FileWriter(saveFile, StandardCharsets.UTF_8))) {
       writer.write(json);
     } catch (IOException e) {
-      fail("Could not write to file");
+      fail("ActivityManagerTests.readFileWithoutImage(): Could not write to file");
     }
 
     ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
