@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ActivityManagerTest {
 
   /**
-   * Test case ID: TC-06.
+   * Test case ID: TC-6.
    * Requirements: ?.
    */
   @Test
