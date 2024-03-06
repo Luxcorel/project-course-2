@@ -1,6 +1,7 @@
 package client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -200,6 +201,25 @@ public class ActivityManagerTests {
     assertEquals(postponedActivity, returnedActivity);
   }
 
+  /**
+   * Test case ID: TC-17.
+   * Requirements: F011.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void addCustomActivityWithoutImage() {
+    ActivityManager activityManager = new ActivityManager(
+        "src/test/resources/activities_test.json");
+    activityManager.getActivityRegister().clear();
+
+    Activity customActivity = activityManager.createActivity("Custom activity",
+        "Custom activity instruction", "Custom activity info");
+    assertNotNull(customActivity);
+
+    Activity addedCustomActivity = activityManager.getActivity().orElseThrow();
+    assertEquals(customActivity, addedCustomActivity);
+  }
+
   // Tests WITH image
 
   /**
@@ -380,6 +400,25 @@ public class ActivityManagerTests {
     Activity returnedActivity = activityManager.getActivity().orElseThrow();
 
     assertEquals(postponedActivity, returnedActivity);
+  }
+
+  /**
+   * Test case ID: TC-18.
+   * Requirements: F011.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void addCustomActivityWithImage() {
+    ActivityManager activityManager = new ActivityManager(
+        "src/test/resources/activities_test.json");
+    activityManager.getActivityRegister().clear();
+
+    Activity customActivity = activityManager.createActivity("Custom activity",
+        "Custom activity instruction", "Custom activity info", "src/test/resources/test_image.png");
+    assertNotNull(customActivity);
+
+    Activity addedCustomActivity = activityManager.getActivity().orElseThrow();
+    assertEquals(customActivity, addedCustomActivity);
   }
 
   @AfterEach
