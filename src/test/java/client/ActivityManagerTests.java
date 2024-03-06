@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -151,6 +152,55 @@ public class ActivityManagerTests {
     assertEquals(activity3Write, activity3Read);
   }
 
+  /**
+   * Test case ID: TC-13.
+   * Requirements: F010b.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void postponeActivityWithoutImageWithOtherActivitiesPresent() {
+    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+
+    activityManager.createActivity("Random activity 1", "Test instruction", "Test info");
+    activityManager.createActivity("Random activity 2", "Test instruction", "Test info");
+    activityManager.createActivity("Random activity 3", "Test instruction", "Test info");
+
+    Activity postponedActivity = new Activity();
+    postponedActivity.setActivityID(UUID.randomUUID().toString());
+    postponedActivity.setActivityName("Test activity");
+    postponedActivity.setActivityInstruction("Test instruction");
+    postponedActivity.setActivityInfo("Test info");
+    postponedActivity.setActivityImage("src/test/resources/test_image.png");
+
+    activityManager.enqueueActivity(postponedActivity);
+
+    Activity returnedActivity = activityManager.getActivity().orElseThrow();
+
+    assertEquals(postponedActivity, returnedActivity);
+  }
+
+  /**
+   * Test case ID: TC-14.
+   * Requirements: F010b.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void postponeActivityWithoutImageWithoutOtherActivitiesPresent() {
+    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+
+    Activity postponedActivity = new Activity();
+    postponedActivity.setActivityID(UUID.randomUUID().toString());
+    postponedActivity.setActivityName("Test activity");
+    postponedActivity.setActivityInstruction("Test instruction");
+    postponedActivity.setActivityInfo("Test info");
+
+    activityManager.enqueueActivity(postponedActivity);
+
+    Activity returnedActivity = activityManager.getActivity().orElseThrow();
+
+    assertEquals(postponedActivity, returnedActivity);
+  }
+
   // Tests WITH image
 
   /**
@@ -281,6 +331,56 @@ public class ActivityManagerTests {
     assertEquals(activity1Write, activity1Read);
     assertEquals(activity2Write, activity2Read);
     assertEquals(activity3Write, activity3Read);
+  }
+
+  /**
+   * Test case ID: TC-15.
+   * Requirements: F010b.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void postponeActivityWithImageWithOtherActivitiesPresent() {
+    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+
+    activityManager.createActivity("Random activity 1", "Test instruction", "Test info", "src/test/resources/test_image.png");
+    activityManager.createActivity("Random activity 2", "Test instruction", "Test info", "src/test/resources/test_image.png");
+    activityManager.createActivity("Random activity 3", "Test instruction", "Test info", "src/test/resources/test_image.png");
+
+    Activity postponedActivity = new Activity();
+    postponedActivity.setActivityID(UUID.randomUUID().toString());
+    postponedActivity.setActivityName("Test activity");
+    postponedActivity.setActivityInstruction("Test instruction");
+    postponedActivity.setActivityInfo("Test info");
+    postponedActivity.setActivityImage("src/test/resources/test_image.png");
+
+    activityManager.enqueueActivity(postponedActivity);
+
+    Activity returnedActivity = activityManager.getActivity().orElseThrow();
+
+    assertEquals(postponedActivity, returnedActivity);
+  }
+
+  /**
+   * Test case ID: TC-16.
+   * Requirements: F010b.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void postponeActivityWithImageWithoutOtherActivitiesPresent() {
+    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+
+    Activity postponedActivity = new Activity();
+    postponedActivity.setActivityID(UUID.randomUUID().toString());
+    postponedActivity.setActivityName("Test activity");
+    postponedActivity.setActivityInstruction("Test instruction");
+    postponedActivity.setActivityInfo("Test info");
+    postponedActivity.setActivityImage("src/test/resources/test_image.png");
+
+    activityManager.enqueueActivity(postponedActivity);
+
+    Activity returnedActivity = activityManager.getActivity().orElseThrow();
+
+    assertEquals(postponedActivity, returnedActivity);
   }
 
   @AfterEach
