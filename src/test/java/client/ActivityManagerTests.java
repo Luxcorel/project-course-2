@@ -170,7 +170,6 @@ public class ActivityManagerTests {
     postponedActivity.setActivityName("Test activity");
     postponedActivity.setActivityInstruction("Test instruction");
     postponedActivity.setActivityInfo("Test info");
-    postponedActivity.setActivityImage("src/test/resources/test_image.png");
 
     activityManager.enqueueActivity(postponedActivity);
 
