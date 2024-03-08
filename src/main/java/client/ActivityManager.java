@@ -125,7 +125,7 @@ public class ActivityManager {
    * @author Johannes Rosengren
    */
   public Optional<Activity> getActivity() {
-    if (activityRegister.isEmpty()) {
+    if (activityRegister.isEmpty() && postponedActivities.isEmpty()) {
       return Optional.empty();
     }
 
