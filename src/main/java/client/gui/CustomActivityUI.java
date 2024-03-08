@@ -33,7 +33,7 @@ public class CustomActivityUI {
 
   private final ClientController clientController;
   private final Component parentComponent;
-  private MessageProvider messageProvider;
+  private IMessageProvider messageProvider;
 
   private JPanel customActivityPanel;
 
@@ -59,7 +59,7 @@ public class CustomActivityUI {
    * @param parentComponent  the parent component of the new window.
    * @param clientController the client controller to use for adding the new activity.
    */
-  public CustomActivityUI(Component parentComponent, ClientController clientController, MessageProvider messageProvider) {
+  public CustomActivityUI(Component parentComponent, ClientController clientController, IMessageProvider messageProvider) {
     this.clientController = clientController;
     this.parentComponent = parentComponent;
     this.messageProvider = messageProvider;
