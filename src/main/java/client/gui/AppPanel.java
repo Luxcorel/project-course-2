@@ -24,6 +24,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -373,8 +374,28 @@ public class AppPanel extends JPanel {
     String quote = quoteJson.get("q").getAsString();
     String author = quoteJson.get("a").getAsString();
 
-    JOptionPane.showMessageDialog(null, String.format("%s\n- %s", quote, author),
-        "Välkommen till EDIM!", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(newImg));
+    JLabel label = new JLabel(String.format("%s\n- %s", quote, author));
+    label.setIcon(new ImageIcon(newImg));
+    label.setHorizontalAlignment(SwingConstants.CENTER);
+
+    JDialog dialog = new JDialog();
+    dialog.setTitle("Välkommen till EDIM!");
+    dialog.setModal(true);
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    dialog.add(label);
+    dialog.pack();
+    dialog.setLocationRelativeTo(null);
+
+    Timer timer = new Timer();
+    timer.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        dialog.dispose();
+        timer.cancel();
+      }
+    }, 5000);
+
+    dialog.setVisible(true);
   }
 
 }
