@@ -33,7 +33,7 @@ public class CustomActivityUI {
 
   private final ClientController clientController;
   private final Component parentComponent;
-  private IMessageProvider messageProvider;
+  private final IMessageProvider messageProvider;
 
   private JPanel customActivityPanel;
 
@@ -73,8 +73,9 @@ public class CustomActivityUI {
    *
    * @param clientController the client controller to use for adding the new activity.
    */
-  public CustomActivityUI(ClientController clientController) {
+  public CustomActivityUI(ClientController clientController, IMessageProvider messageProvider) {
     this.clientController = clientController;
+    this.messageProvider = messageProvider;
     this.parentComponent = null;
 
     initializeComponents();
