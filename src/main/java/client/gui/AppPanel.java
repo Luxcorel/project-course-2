@@ -202,7 +202,7 @@ public class AppPanel extends JPanel {
    * @implNote Requirements: F011, F33
    */
   public Optional<Activity> addCustomActivity() {
-    CustomActivityUI customActivityUI = new CustomActivityUI(this, clientController);
+    CustomActivityUI customActivityUI = new CustomActivityUI(this, clientController, new MessageProvider());
     return customActivityUI.addCustomActivity();
   }
 
