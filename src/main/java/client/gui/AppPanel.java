@@ -90,6 +90,7 @@ public class AppPanel extends JPanel {
 
     createComponents();
 
+
     showWelcomeMessage();
   }
 
@@ -379,7 +380,7 @@ public class AppPanel extends JPanel {
     label.setHorizontalAlignment(SwingConstants.CENTER);
 
     JDialog dialog = new JDialog();
-    dialog.setTitle("Välkommen till EDIM!");
+    dialog.setTitle("Welcome to EDIM!");
     dialog.setModal(true);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.add(label);
