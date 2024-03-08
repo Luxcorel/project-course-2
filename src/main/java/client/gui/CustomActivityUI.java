@@ -170,11 +170,11 @@ public class CustomActivityUI {
       instructionInput.setBorder(instructionInput.getText().isBlank() ? error : null);
       infoInput.setBorder(infoInput.getText().isBlank() ? error : null);
 
-      JOptionPane.showMessageDialog(parentComponent,
+      messageProvider.showMessageDialog(parentComponent,
           "All text fields are required to add a new activity!", "Missing Required Information",
           JOptionPane.ERROR_MESSAGE);
 
-      option = JOptionPane.showConfirmDialog(parentComponent, customActivityPanel,
+      option = messageProvider.showConfirmDialog(parentComponent, customActivityPanel,
           "Add new activity",
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
       if (option != JOptionPane.OK_OPTION) {
@@ -206,7 +206,7 @@ public class CustomActivityUI {
    * @implNote Requirements: F011, F33
    */
   public Optional<Activity> getCustomActivity() {
-    int option = JOptionPane.showConfirmDialog(parentComponent, customActivityPanel,
+    int option = messageProvider.showConfirmDialog(parentComponent, customActivityPanel,
         "Add new activity",
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
     if (option != JOptionPane.OK_OPTION) {
@@ -224,11 +224,11 @@ public class CustomActivityUI {
       instructionInput.setBorder(instructionInput.getText().isBlank() ? error : null);
       infoInput.setBorder(infoInput.getText().isBlank() ? error : null);
 
-      JOptionPane.showMessageDialog(parentComponent,
+      messageProvider.showMessageDialog(parentComponent,
           "All text fields are required to add a new activity!", "Required information missing",
           JOptionPane.ERROR_MESSAGE);
 
-      option = JOptionPane.showConfirmDialog(parentComponent, customActivityPanel,
+      option = messageProvider.showConfirmDialog(parentComponent, customActivityPanel,
           "Add new activity",
           JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
       if (option != JOptionPane.OK_OPTION) {
