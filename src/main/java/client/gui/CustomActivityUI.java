@@ -33,6 +33,7 @@ public class CustomActivityUI {
 
   private final ClientController clientController;
   private final Component parentComponent;
+  private MessageProvider messageProvider;
 
   private JPanel customActivityPanel;
 
@@ -58,9 +59,10 @@ public class CustomActivityUI {
    * @param parentComponent  the parent component of the new window.
    * @param clientController the client controller to use for adding the new activity.
    */
-  public CustomActivityUI(Component parentComponent, ClientController clientController) {
+  public CustomActivityUI(Component parentComponent, ClientController clientController, MessageProvider messageProvider) {
     this.clientController = clientController;
     this.parentComponent = parentComponent;
+    this.messageProvider = messageProvider;
 
     initializeComponents();
     setupUI();
@@ -150,7 +152,7 @@ public class CustomActivityUI {
    * @implNote Requirements: F011, F33
    */
   public Optional<Activity> addCustomActivity() {
-    int option = JOptionPane.showConfirmDialog(parentComponent, customActivityPanel,
+    int option = messageProvider.showConfirmDialog(parentComponent, customActivityPanel,
         "Add New Activity",
         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
     if (option != JOptionPane.OK_OPTION) {
