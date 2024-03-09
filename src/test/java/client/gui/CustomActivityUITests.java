@@ -500,7 +500,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void addActivity_enterCustomActivityWithNameAndDescriptionAndInfoAndImageButDeselectImages_shouldAddActivityWithoutImage() {
+  public void addActivity_enterCustomActivityWithNameAndDescriptionAndInfoAndImageButDeselectImage_shouldAddActivityWithoutImage() {
     ClientController mock = mock(ClientController.class);
 
     Activity expected = new Activity();
