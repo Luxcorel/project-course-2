@@ -30,7 +30,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void addActivity_submitCustomActivityWithEmptyStrings_shouldFail() {
+  public void addActivity_submitCustomActivityWithEmptyStrings_shouldNotAddActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.addActivity("", "", ""))
@@ -64,7 +64,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void addActivity_submitCustomActivityWithNulls_shouldFail() {
+  public void addActivity_submitCustomActivityWithNulls_shouldNotAddActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.addActivity(null, null, null))
@@ -102,7 +102,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void addActivity_submitCustomActivityWithNameButOthersEmptyString_shouldFail() {
+  public void addActivity_submitCustomActivityWithNameButOthersEmptyString_shouldNotAddActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.addActivity("Test name", "", ""))
@@ -137,7 +137,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void addActivity_submitCustomActivityWithNameAndInfoButOthersEmptyString_shouldFail() {
+  public void addActivity_submitCustomActivityWithNameAndInfoButOthersEmptyString_shouldNotAddActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.addActivity("Test name", "", "Test info"))
@@ -173,7 +173,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void addActivity_submitCustomActivityWithNameAndInstructionButOthersEmptyString_shouldFail() {
+  public void addActivity_submitCustomActivityWithNameAndInstructionButOthersEmptyString_shouldNotAddActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.addActivity("Test name", "Test instruction", ""))
@@ -209,7 +209,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void addActivity_submitCustomActivityWithInstructionButOthersEmptyString_shouldFail() {
+  public void addActivity_submitCustomActivityWithInstructionButOthersEmptyString_shouldNotAddActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.addActivity("", "Test instruction", ""))
@@ -244,7 +244,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void addActivity_submitCustomActivityWithInstructionAndInfoButOthersEmptyString_shouldFail() {
+  public void addActivity_submitCustomActivityWithInstructionAndInfoButOthersEmptyString_shouldNotAddActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.addActivity("", "Test instruction", "Test info"))
@@ -280,7 +280,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void addActivity_submitCustomActivityWithInfoButOthersEmptyString_shouldFail() {
+  public void addActivity_submitCustomActivityWithInfoButOthersEmptyString_shouldNotAddActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.addActivity("", "", "Test info"))
@@ -591,7 +591,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void getActivity_submitCustomActivityWithEmptyStrings_shouldFail() {
+  public void getActivity_submitCustomActivityWithEmptyStrings_shouldNotReturnActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.packageActivity("", "", ""))
@@ -625,7 +625,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void getActivity_submitCustomActivityWithNulls_shouldFail() {
+  public void getActivity_submitCustomActivityWithNulls_shouldNotReturnActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.packageActivity(null, null, null))
@@ -663,7 +663,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void getActivity_submitCustomActivityWithNameButOthersEmptyString_shouldFail() {
+  public void getActivity_submitCustomActivityWithNameButOthersEmptyString_shouldNotReturnActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.packageActivity("Test name", "", ""))
@@ -698,7 +698,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void getActivity_submitCustomActivityWithNameAndInfoButOthersEmptyString_shouldFail() {
+  public void getActivity_submitCustomActivityWithNameAndInfoButOthersEmptyString_shouldNotReturnActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.packageActivity("Test name", "", "Test info"))
@@ -734,7 +734,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void getActivity_submitCustomActivityWithNameAndInstructionButOthersEmptyString_shouldFail() {
+  public void getActivity_submitCustomActivityWithNameAndInstructionButOthersEmptyString_shouldNotReturnActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.packageActivity("Test name", "Test instruction", ""))
@@ -770,7 +770,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void getActivity_submitCustomActivityWithInstructionButOthersEmptyString_shouldFail() {
+  public void getActivity_submitCustomActivityWithInstructionButOthersEmptyString_shouldNotReturnActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.packageActivity("", "Test instruction", ""))
@@ -805,7 +805,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void getActivity_submitCustomActivityWithInstructionAndInfoButOthersEmptyString_shouldFail() {
+  public void getActivity_submitCustomActivityWithInstructionAndInfoButOthersEmptyString_shouldNotReturnActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.packageActivity("", "Test instruction", "Test info"))
@@ -841,7 +841,7 @@ public class CustomActivityUITests {
    * @author Johannes Rosengren
    */
   @Test
-  public void getActivity_submitCustomActivityWithInfoButOthersEmptyString_shouldFail() {
+  public void getActivity_submitCustomActivityWithInfoButOthersEmptyString_shouldNotReturnActivity() {
     ClientController mock = mock(ClientController.class);
 
     when(mock.packageActivity("", "", "Test info"))
