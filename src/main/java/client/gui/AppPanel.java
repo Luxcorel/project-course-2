@@ -90,8 +90,8 @@ public class AppPanel extends JPanel {
 
     createComponents();
 
-
-    showWelcomeMessage();
+    WelcomeMessageUI welcomeMessageUI = new WelcomeMessageUI();
+    welcomeMessageUI.showWelcomeMessage();
   }
 
   private void createComponents() {
@@ -355,48 +355,5 @@ public class AppPanel extends JPanel {
         startTimer(chosenMinuteInterval);
       }
     }
-
   }
-
-  /**
-   * TODO: add option to disable this through a settings file
-   */
-  public void showWelcomeMessage() {
-    ImageIcon welcomeIcon = new ImageIcon("imagesClient/exercise.png");
-    Image image = welcomeIcon.getImage();
-    Image newImg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-
-    InspirationalQuotes quotes = new InspirationalQuotes();
-    JsonObject quoteJson = quotes.getRandomQuote();
-    if (quoteJson == null) {
-      return;
-    }
-
-    String quote = quoteJson.get("q").getAsString();
-    String author = quoteJson.get("a").getAsString();
-
-    JLabel label = new JLabel(String.format("%s\n- %s", quote, author));
-    label.setIcon(new ImageIcon(newImg));
-    label.setHorizontalAlignment(SwingConstants.CENTER);
-
-    JDialog dialog = new JDialog();
-    dialog.setTitle("Welcome to EDIM!");
-    dialog.setModal(true);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    dialog.add(label);
-    dialog.pack();
-    dialog.setLocationRelativeTo(null);
-
-    Timer timer = new Timer();
-    timer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        dialog.dispose();
-        timer.cancel();
-      }
-    }, 5000);
-
-    dialog.setVisible(true);
-  }
-
 }
