@@ -5,9 +5,7 @@ import client.ActivityListItem;
 import client.ClientController;
 import client.OSDetection;
 import client.OSDetection.OS;
-import client.external.InspirationalQuotes;
 import client.notifications.WindowsNotification;
-import com.google.gson.JsonObject;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,22 +22,16 @@ import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * This is the panel in the frame that contains pretty much all of the components in the GUI.
@@ -52,6 +44,7 @@ public class AppPanel extends JPanel {
 
   private final MainPanel mainPanel;
   private final ClientController clientController;
+  private final IWelcomeMessageUI welcomeMessageUI;
 
   // left panel and its components
   private JPanel west;
@@ -79,9 +72,10 @@ public class AppPanel extends JPanel {
   private int timeLeftInSeconds; // seconds left until the next activity notification should appear
   private int chosenMinuteInterval; // this value is used whenever a new timer is started.
 
-  public AppPanel(MainPanel mainPanel, ClientController clientController) {
+  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI) {
     this.mainPanel = mainPanel;
     this.clientController = clientController;
+    this.welcomeMessageUI = welcomeMessageUI;
 
     setSize(new Dimension(819, 438));
     BorderLayout borderLayout = new BorderLayout();
@@ -89,7 +83,7 @@ public class AppPanel extends JPanel {
 
     createComponents();
 
-    showWelcomeMessage();
+    welcomeMessageUI.showWelcomeMessage();
   }
 
   private void createComponents() {
@@ -353,28 +347,5 @@ public class AppPanel extends JPanel {
         startTimer(chosenMinuteInterval);
       }
     }
-
   }
-
-  /**
-   * TODO: add option to disable this through a settings file
-   */
-  public void showWelcomeMessage() {
-    ImageIcon welcomeIcon = new ImageIcon("imagesClient/exercise.png");
-    Image image = welcomeIcon.getImage();
-    Image newImg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-
-    InspirationalQuotes quotes = new InspirationalQuotes();
-    JsonObject quoteJson = quotes.getRandomQuote();
-    if (quoteJson == null) {
-      return;
-    }
-
-    String quote = quoteJson.get("q").getAsString();
-    String author = quoteJson.get("a").getAsString();
-
-    JOptionPane.showMessageDialog(null, String.format("%s\n- %s", quote, author),
-        "Välkommen till EDIM!", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(newImg));
-  }
-
 }

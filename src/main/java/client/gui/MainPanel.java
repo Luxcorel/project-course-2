@@ -1,10 +1,13 @@
 package client.gui;
 
 import client.ClientController;
+import client.external.InspirationalQuotes;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.Timer;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -20,7 +23,7 @@ public class MainPanel extends JPanel {
     setSize(new Dimension(819, 438));
     setBackground(backGroundColor);
     setBorder(BorderFactory.createTitledBorder("Welcome!"));
-    appPanel = new AppPanel(this, clientController);
+    appPanel = new AppPanel(this, clientController, new WelcomeMessageUI(new Timer(), new InspirationalQuotes(), new JDialog()));
     add(appPanel);
   }
 
