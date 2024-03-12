@@ -12,13 +12,21 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class WelcomeMessageUI implements IWelcomeMessageUI{
+  private final Timer timer;
+  private final InspirationalQuotes quotes;
+  private final Dialog dialog;
+
+  public WelcomeMessageUI(Timer timer, InspirationalQuotes quotes, Dialog dialog) {
+    this.timer = timer;
+    this.quotes = quotes;
+    this.dialog = dialog;
+  }
   @Override
   public void showWelcomeMessage() {
     ImageIcon welcomeIcon = new ImageIcon("imagesClient/exercise.png");
     Image image = welcomeIcon.getImage();
     Image newImg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
-    InspirationalQuotes quotes = new InspirationalQuotes();
     JsonObject quoteJson = quotes.getRandomQuote();
     if (quoteJson == null) {
       return;
@@ -31,15 +39,13 @@ public class WelcomeMessageUI implements IWelcomeMessageUI{
     label.setIcon(new ImageIcon(newImg));
     label.setHorizontalAlignment(SwingConstants.CENTER);
 
-    JDialog dialog = new JDialog();
+
     dialog.setTitle("Welcome to EDIM!");
     dialog.setModal(true);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.add(label);
     dialog.pack();
     dialog.setLocationRelativeTo(null);
 
-    Timer timer = new Timer();
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
