@@ -1,5 +1,6 @@
 package client;
 
+import client.OSDetection.OS;
 import client.notifications.WindowsNotification;
 import org.junit.jupiter.api.Test;
 import java.awt.TrayIcon;
@@ -16,16 +17,19 @@ public class WindowsNotificationTest {
 
   @Test
   public void testDisplayNotification() throws Exception {
-    TrayIcon trayIconMock = mock(TrayIcon.class);
+    if (OSDetection.getOS() == OS.WINDOWS) {
+      TrayIcon trayIconMock = mock(TrayIcon.class);
 
-    WindowsNotification windowsNotification = new WindowsNotification();
+      WindowsNotification windowsNotification = new WindowsNotification();
 
-    Field trayIconField = WindowsNotification.class.getDeclaredField("trayIcon");
-    trayIconField.setAccessible(true);
-    trayIconField.set(windowsNotification, trayIconMock);
+      Field trayIconField = WindowsNotification.class.getDeclaredField("trayIcon");
+      trayIconField.setAccessible(true);
+      trayIconField.set(windowsNotification, trayIconMock);
 
-    windowsNotification.displayNotification("Test Title", "Test Message");
+      windowsNotification.displayNotification("Test Title", "Test Message");
 
-    verify(trayIconMock, times(1)).displayMessage("Test Title", "Test Message", TrayIcon.MessageType.INFO);
+      verify(trayIconMock, times(1)).displayMessage("Test Title", "Test Message",
+          TrayIcon.MessageType.INFO);
+    }
   }
 }
