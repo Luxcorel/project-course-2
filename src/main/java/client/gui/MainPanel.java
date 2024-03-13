@@ -1,5 +1,6 @@
 package client.gui;
 
+import client.ActivityTimer;
 import client.ClientController;
 import client.external.InspirationalQuotes;
 import java.awt.Color;
@@ -23,7 +24,7 @@ public class MainPanel extends JPanel {
     setSize(new Dimension(819, 438));
     setBackground(backGroundColor);
     setBorder(BorderFactory.createTitledBorder("Welcome!"));
-    appPanel = new AppPanel(this, clientController, new WelcomeMessageUI(new Timer(), new InspirationalQuotes(), new JDialog()));
+    appPanel = new AppPanel(this, clientController, new WelcomeMessageUI(new Timer(), new InspirationalQuotes(), new JDialog()), new ActivityTimer(clientController));
     add(appPanel);
   }
 

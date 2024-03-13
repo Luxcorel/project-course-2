@@ -2,7 +2,9 @@ package client.gui;
 
 import client.Activity;
 import client.ActivityListItem;
+import client.ActivityTimer;
 import client.ClientController;
+import client.IActivityTimer;
 import client.OSDetection;
 import client.OSDetection.OS;
 import client.notifications.WindowsNotification;
@@ -45,6 +47,7 @@ public class AppPanel extends JPanel {
   private final MainPanel mainPanel;
   private final ClientController clientController;
   private final IWelcomeMessageUI welcomeMessageUI;
+  private final IActivityTimer activityTimer;
 
   // left panel and its components
   private JPanel west;
@@ -72,10 +75,11 @@ public class AppPanel extends JPanel {
   private int timeLeftInSeconds; // seconds left until the next activity notification should appear
   private int chosenMinuteInterval; // this value is used whenever a new timer is started.
 
-  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI) {
+  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI, IActivityTimer activityTimer) {
     this.mainPanel = mainPanel;
     this.clientController = clientController;
     this.welcomeMessageUI = welcomeMessageUI;
+    this.activityTimer = activityTimer;
 
     setSize(new Dimension(819, 438));
     BorderLayout borderLayout = new BorderLayout();
@@ -126,7 +130,7 @@ public class AppPanel extends JPanel {
       int minutes = (int) timerIntervalSelector.getValue();
       setTimerInterval(minutes);
 
-      startTimer(chosenMinuteInterval);
+      activityTimer.startTimer(chosenMinuteInterval, this);
     });
     centerPnl.add(startTimer, BorderLayout.SOUTH);
 
@@ -187,6 +191,14 @@ public class AppPanel extends JPanel {
     );
   }
 
+  public void setTimeLeftText(String time) {
+    timeLeft.setText(time);
+  }
+
+  public void setStartTimerText(String text) {
+    startTimer.setText(text);
+  }
+
   /**
    * Opens a new window with a form for the user to add a new activity.
    *
@@ -198,55 +210,6 @@ public class AppPanel extends JPanel {
   public Optional<Activity> addCustomActivity() {
     CustomActivityUI customActivityUI = new CustomActivityUI(this, clientController, new MessageProvider());
     return customActivityUI.addCustomActivity();
-  }
-
-  /**
-   * Starts a timer with the given number of minutes.
-   * If a timer is already running, it is canceled and a new one is started.
-   * The timer will show a notification when it reaches 0.
-   *
-   * @param minutes the number of minutes to start the timer with
-   * @author Johannes Rosengren
-   */
-  public void startTimer(int minutes) {
-    if (timer != null) {
-      timer.cancel();
-    }
-
-    timeLeftInSeconds = (minutes * 60);
-
-    timer = new Timer();
-    timer.scheduleAtFixedRate(new TimerTask() {
-      public void run() {
-        int minutes = timeLeftInSeconds / 60;
-        int seconds = timeLeftInSeconds % 60;
-
-        if (timeLeftInSeconds == 0) {
-          String time = String.format("Timer: %d:%02d", minutes, seconds);
-          timeLeft.setText(time);
-          SwingUtilities.invokeLater(
-              () -> {
-                Optional<Activity> activity = clientController.getActivity();
-                if (activity.isEmpty()) {
-                  JOptionPane.showMessageDialog(AppPanel.this,
-                      "Could not find any saved activities! Add a new activity before you start the timer.",
-                      "No Activities Found", JOptionPane.ERROR_MESSAGE);
-
-                  startTimer.setText("Start Timer");
-                  return;
-                }
-
-                showNotification(activity.get());
-              });
-          timer.cancel();
-        }
-
-        timeLeftInSeconds--;
-
-        String time = String.format("Timer: %d:%02d", minutes, seconds);
-        timeLeft.setText(time);
-      }
-    }, 0, 1000);
   }
 
   private void createActivityInfoPanel() {
@@ -338,13 +301,13 @@ public class AppPanel extends JPanel {
     switch (option) {
       case JOptionPane.NO_OPTION -> {
         clientController.enqueueActivity(activity);
-        startTimer(5);
+        activityTimer.startTimer(5, this);
       }
       case JOptionPane.YES_OPTION -> {
         activity.setCompleted(true);
         addToActivityHistory(activity);
 
-        startTimer(chosenMinuteInterval);
+        activityTimer.startTimer(chosenMinuteInterval, this);
       }
     }
   }
