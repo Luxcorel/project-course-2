@@ -1,36 +1,25 @@
 package client;
 
-import client.gui.AppPanel;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class ActivityTimer implements IActivityTimer{
-  private final ClientController clientController;
+  private final IActivityTimerCallback callback;
   private Timer timer;
   private int timeLeftInSeconds;
+  private int chosenMinuteInterval;
 
-  public ActivityTimer(ClientController clientController) {
-    this.clientController = clientController;
+  public ActivityTimer(IActivityTimerCallback callback) {
+    this.callback = callback;
   }
 
-  /**
-   * Starts a timer with the given number of minutes.
-   * If a timer is already running, it is canceled and a new one is started.
-   * The timer will show a notification when it reaches 0.
-   *
-   * @param minutes the number of minutes to start the timer with
-   * @author Johannes Rosengren, Samuel Carlsson
-   */
   @Override
-  public void startTimer(int minutes, AppPanel appPanel) {
+  public void startTimer() {
     if (timer != null) {
       timer.cancel();
     }
 
-    timeLeftInSeconds = (minutes * 60);
+    timeLeftInSeconds = (chosenMinuteInterval * 60);
 
     timer = new Timer();
     timer.scheduleAtFixedRate(new TimerTask() {
@@ -38,31 +27,31 @@ public class ActivityTimer implements IActivityTimer{
         int minutes = timeLeftInSeconds / 60;
         int seconds = timeLeftInSeconds % 60;
 
-        if (timeLeftInSeconds == 0) {
-          String time = String.format("Timer: %d:%02d", minutes, seconds);
-          appPanel.setTimeLeftText(time);
-          SwingUtilities.invokeLater(
-              () -> {
-                Optional<Activity> activity = clientController.getActivity();
-                if (activity.isEmpty()) {
-                  JOptionPane.showMessageDialog(appPanel,
-                      "Could not find any saved activities! Add a new activity before you start the timer.",
-                      "No Activities Found", JOptionPane.ERROR_MESSAGE);
-
-                  appPanel.setStartTimerText("Start Timer");
-                  return;
-                }
-
-                appPanel.showNotification(activity.get());
-              });
-          timer.cancel();
-        }
-
         timeLeftInSeconds--;
 
-        String time = String.format("Timer: %d:%02d", minutes, seconds);
-        appPanel.setTimeLeftText(time);
+        callback.timeRemainingCallback(minutes, seconds);
+
+        if (minutes == 0 && seconds == 0) {
+          callback.timesUpCallback();
+        };
       }
     }, 0, 1000);
+  }
+
+  @Override
+  public void stopTimer() {
+    if (timer != null) {
+      timer.cancel();
+    }
+  }
+
+  @Override
+  public void setTimerInterval(int minutes) {
+    chosenMinuteInterval = minutes;
+  }
+
+  @Override
+  public int getTimerInterval() {
+    return chosenMinuteInterval;
   }
 }

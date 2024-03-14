@@ -24,7 +24,7 @@ public class MainPanel extends JPanel {
     setSize(new Dimension(819, 438));
     setBackground(backGroundColor);
     setBorder(BorderFactory.createTitledBorder("Welcome!"));
-    appPanel = new AppPanel(this, clientController, new WelcomeMessageUI(new Timer(), new InspirationalQuotes(), new JDialog()), new ActivityTimer(clientController));
+    appPanel = new AppPanel(this, clientController, new WelcomeMessageUI(new Timer(), new InspirationalQuotes(), new JDialog()));
     add(appPanel);
   }
 
