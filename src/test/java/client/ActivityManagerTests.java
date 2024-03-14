@@ -2,8 +2,13 @@ package client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -419,6 +425,47 @@ public class ActivityManagerTests {
 
     Activity addedCustomActivity = activityManager.getActivity().orElseThrow();
     assertEquals(customActivity, addedCustomActivity);
+  }
+
+  // IO exception related tests
+
+  /**
+   * Test case ID: TC-56.
+   * Requirements: F25.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void cantCreateSaveFile_shouldThrow() throws IOException {
+    String filePath = "src/test/resources/activities_test.json";
+
+    ActivityManager activityManager = spy(new ActivityManager(filePath));
+
+    when(activityManager.fileExists(filePath)).thenReturn(false);
+    doThrow(IOException.class).when(activityManager).createFile(filePath);
+
+    try {
+      activityManager.saveActivitiesToDisc(filePath);
+    } catch (RuntimeException e) {
+      return;
+    }
+
+    fail("Should have thrown exception when trying to save the file");
+  }
+
+  /**
+   * Test case ID: TC-61.
+   * Requirements: F25.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void createActivityCantSaveActivity_ShouldThrowError() {
+    String filePath = "src/test/resources/activities_test.json";
+    ActivityManager activityManager = spy(new ActivityManager(filePath));
+
+    when(activityManager.getActivity(anyString())).thenReturn(Optional.empty());
+
+    assertThrows(RuntimeException.class, () -> activityManager.createActivity("Custom activity",
+        "Custom activity instruction", "Custom activity info", "src/test/resources/test_image.png"));
   }
 
   @AfterEach

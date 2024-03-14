@@ -46,7 +46,7 @@ public class ActivityManager {
    * @return true if the file exists, otherwise false.
    * @author Johannes Rosengren
    */
-  private boolean fileExists(String filePath) {
+  public boolean fileExists(String filePath) {
     return new File(filePath).exists();
   }
 
@@ -57,7 +57,7 @@ public class ActivityManager {
    * @throws IOException if the file could not be created.
    * @author Johannes Rosengren
    */
-  private void createFile(String filePath) throws IOException {
+  public void createFile(String filePath) throws IOException {
     File file = new File(filePath);
     if (!file.exists()) {
       file.createNewFile();
