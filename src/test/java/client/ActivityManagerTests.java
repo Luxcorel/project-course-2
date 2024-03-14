@@ -453,6 +453,73 @@ public class ActivityManagerTests {
   }
 
   /**
+   * Test case ID: TC-57.
+   * Requirements: F26.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void cantReadExistingSaveFile_shouldThrow() {
+    String filePath = "src/test/resources/activities_test.json";
+
+    ActivityManager activityManager = spy(new ActivityManager(filePath));
+
+    when(activityManager.fileExists(filePath)).thenReturn(true);
+
+    try {
+      activityManager.readActivitiesFromDisc(filePath);
+    } catch (RuntimeException e) {
+      return;
+    }
+
+    fail("Should have thrown exception when trying to read the file");
+  }
+
+  /**
+   * Test case ID: TC-58.
+   * Requirements: F26.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void emptyExistingSaveFile_ShouldNotThrow() throws IOException {
+    String filePath = "src/test/resources/activities_test.json";
+    new File(filePath).getAbsoluteFile().createNewFile();
+
+    ActivityManager activityManager = new ActivityManager(filePath);
+
+    activityManager.readActivitiesFromDisc(filePath);
+  }
+
+  /**
+   * Test case ID: TC-59.
+   * Requirements: F26.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void getActivity_NoActivitiesAvailable_ShouldReturnEmptyOptional() {
+    String filePath = "src/test/resources/activities_test.json";
+    ActivityManager activityManager = new ActivityManager(filePath);
+
+    Optional<Activity> returnValue = activityManager.getActivity();
+
+    assertTrue(returnValue.isEmpty());
+  }
+
+  /**
+   * Test case ID: TC-60.
+   * Requirements: F26.
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void getActivityById_NoActivityWithSpecifiedIdExists_ShouldReturnEmptyOptional() {
+    String filePath = "src/test/resources/activities_test.json";
+    ActivityManager activityManager = new ActivityManager(filePath);
+
+    Optional<Activity> returnValue = activityManager.getActivity("activity_that_doesnt_exist");
+
+    assertTrue(returnValue.isEmpty());
+  }
+
+  /**
    * Test case ID: TC-61.
    * Requirements: F25.
    * @author Johannes Rosengren
