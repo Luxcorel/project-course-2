@@ -13,10 +13,14 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.sound.sampled.*;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -327,12 +331,35 @@ public class AppPanel extends JPanel {
           "</body>" +
         "</html>";
 
+    String filePath = "src\\main\\resources\\NotisSound.wav";
+
+    try {
+      AudioInputStream audioStream =
+          AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+
+      Clip clip = AudioSystem.getClip();
+      clip.open(audioStream);
+
+      clip.start();
+
+
+    } catch (UnsupportedAudioFileException e) {
+      throw new RuntimeException(e);
+    } catch (LineUnavailableException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+
     if (OSDetection.getOS() == OS.WINDOWS) {
       WindowsNotification notification = new WindowsNotification();
       notification.displayNotification("Time To Exercise", "Click to open EDIM");
     }
 
-    int option = JOptionPane.showOptionDialog(this, instructionMessage, activity.getActivityName(),
+
+
+      int option = JOptionPane.showOptionDialog(this, instructionMessage, activity.getActivityName(),
         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, activityIcon, buttons, null);
 
     switch (option) {
