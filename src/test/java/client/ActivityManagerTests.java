@@ -30,6 +30,8 @@ import org.junit.jupiter.api.Test;
  */
 public class ActivityManagerTests {
 
+  public static final String SAVE_FILE_PATH = "src/test/resources/activities_test.json";
+
   // Tests WITHOUT image
 
   /**
@@ -39,9 +41,9 @@ public class ActivityManagerTests {
    */
   @Test
   public void saveFileWithoutImage() {
-    File activitiesFile = new File("src/test/resources/activities_test.json");
+    File activitiesFile = new File(SAVE_FILE_PATH);
 
-    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
 
     Activity activity1Write = activityManager.createActivity("abcdefghijklmnopqrstuvwxyzåäö",
         "abcdefghijklmnopqrstuvwxyzåäö", "abcdefghijklmnopqrstuvwxyzåäö");
@@ -50,7 +52,7 @@ public class ActivityManagerTests {
     Activity activity3Write = activityManager.createActivity("Test Activity 3", "Instructions 3",
         "Info 3");
 
-    activityManager.saveActivitiesToDisc("src/test/resources/activities_test.json");
+    activityManager.saveActivitiesToDisc(SAVE_FILE_PATH);
 
     assertTrue(activitiesFile.exists());
 
@@ -105,7 +107,7 @@ public class ActivityManagerTests {
 
     String json = gson.toJson(activities);
 
-    File saveFile = new File("src/test/resources/activities_test.json");
+    File saveFile = new File(SAVE_FILE_PATH);
     try {
       saveFile.createNewFile();
     } catch (IOException e) {
@@ -119,7 +121,7 @@ public class ActivityManagerTests {
       fail("ActivityManagerTests.readFileWithoutImage(): Could not write to file");
     }
 
-    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
 
     Activity activity1Read = activityManager.getActivity(activity1.getActivityID()).get();
     Activity activity2Read = activityManager.getActivity(activity2.getActivityID()).get();
@@ -137,7 +139,7 @@ public class ActivityManagerTests {
    */
   @Test
   public void saveAndLoadFileWithoutImage() {
-    ActivityManager activityManagerSave = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManagerSave = new ActivityManager(SAVE_FILE_PATH);
 
     Activity activity1Write = activityManagerSave.createActivity("abcdefghijklmnopqrstuvwxyzåäö",
         "abcdefghijklmnopqrstuvwxyzåäö", "abcdefghijklmnopqrstuvwxyzåäö");
@@ -146,9 +148,9 @@ public class ActivityManagerTests {
     Activity activity3Write = activityManagerSave.createActivity("Test Activity 3",
         "Instructions 3", "Info 3");
 
-    activityManagerSave.saveActivitiesToDisc("src/test/resources/activities_test.json");
+    activityManagerSave.saveActivitiesToDisc(SAVE_FILE_PATH);
 
-    ActivityManager activityManagerLoad = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManagerLoad = new ActivityManager(SAVE_FILE_PATH);
 
     Activity activity1Read = activityManagerLoad.getActivity(activity1Write.getActivityID()).get();
     Activity activity2Read = activityManagerLoad.getActivity(activity2Write.getActivityID()).get();
@@ -166,7 +168,7 @@ public class ActivityManagerTests {
    */
   @Test
   public void postponeActivityWithoutImageWithOtherActivitiesPresent() {
-    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
 
     activityManager.createActivity("Random activity 1", "Test instruction", "Test info");
     activityManager.createActivity("Random activity 2", "Test instruction", "Test info");
@@ -192,7 +194,7 @@ public class ActivityManagerTests {
    */
   @Test
   public void postponeActivityWithoutImageWithoutOtherActivitiesPresent() {
-    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
 
     Activity postponedActivity = new Activity();
     postponedActivity.setActivityID(UUID.randomUUID().toString());
@@ -214,8 +216,7 @@ public class ActivityManagerTests {
    */
   @Test
   public void addCustomActivityWithoutImage() {
-    ActivityManager activityManager = new ActivityManager(
-        "src/test/resources/activities_test.json");
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
     activityManager.getActivityRegister().clear();
 
     Activity customActivity = activityManager.createActivity("Custom activity",
@@ -235,9 +236,9 @@ public class ActivityManagerTests {
    */
   @Test
   public void saveFileWithImage() {
-    File activitiesFile = new File("src/test/resources/activities_test.json");
+    File activitiesFile = new File(SAVE_FILE_PATH);
 
-    ActivityManager manager = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager manager = new ActivityManager(SAVE_FILE_PATH);
 
     Activity activity1Write = manager.createActivity("abcdefghijklmnopqrstuvwxyzåäö", "abcdefghijklmnopqrstuvwxyzåäö",
         "abcdefghijklmnopqrstuvwxyzåäö", "src/test/resources/test_image.png");
@@ -246,7 +247,7 @@ public class ActivityManagerTests {
     Activity activity3Write = manager.createActivity("Test Activity 3", "Instructions 3", "Info 3",
         "src/test/resources/test_image.png");
 
-    manager.saveActivitiesToDisc("src/test/resources/activities_test.json");
+    manager.saveActivitiesToDisc(SAVE_FILE_PATH);
 
     assertTrue(activitiesFile.exists());
 
@@ -304,7 +305,7 @@ public class ActivityManagerTests {
 
     String json = gson.toJson(activities);
 
-    File saveFile = new File("src/test/resources/activities_test.json");
+    File saveFile = new File(SAVE_FILE_PATH);
     try {
       saveFile.createNewFile();
     } catch (IOException e) {
@@ -318,7 +319,7 @@ public class ActivityManagerTests {
       fail("ActivityManagerTests.readFileWithImage(): Could not write to file");
     }
 
-    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
 
     Activity activity1Read = activityManager.getActivity(activity1.getActivityID()).get();
     Activity activity2Read = activityManager.getActivity(activity2.getActivityID()).get();
@@ -336,7 +337,7 @@ public class ActivityManagerTests {
    */
   @Test
   public void saveAndLoadFileWithImage() {
-    ActivityManager activityManagerSave = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManagerSave = new ActivityManager(SAVE_FILE_PATH);
 
     Activity activity1Write = activityManagerSave.createActivity("abcdefghijklmnopqrstuvwxyzåäö",
         "abcdefghijklmnopqrstuvwxyzåäö", "abcdefghijklmnopqrstuvwxyzåäö", "src/test/resources/test_image.png");
@@ -345,9 +346,9 @@ public class ActivityManagerTests {
     Activity activity3Write = activityManagerSave.createActivity("Test Activity 3",
         "Instructions 3", "Info 3", "src/test/resources/test_image.png");
 
-    activityManagerSave.saveActivitiesToDisc("src/test/resources/activities_test.json");
+    activityManagerSave.saveActivitiesToDisc(SAVE_FILE_PATH);
 
-    ActivityManager activityManagerLoad = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManagerLoad = new ActivityManager(SAVE_FILE_PATH);
 
     Activity activity1Read = activityManagerLoad.getActivity(activity1Write.getActivityID()).get();
     Activity activity2Read = activityManagerLoad.getActivity(activity2Write.getActivityID()).get();
@@ -365,7 +366,7 @@ public class ActivityManagerTests {
    */
   @Test
   public void postponeActivityWithImageWithOtherActivitiesPresent() {
-    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
 
     activityManager.createActivity("Random activity 1", "Test instruction", "Test info", "src/test/resources/test_image.png");
     activityManager.createActivity("Random activity 2", "Test instruction", "Test info", "src/test/resources/test_image.png");
@@ -392,7 +393,7 @@ public class ActivityManagerTests {
    */
   @Test
   public void postponeActivityWithImageWithoutOtherActivitiesPresent() {
-    ActivityManager activityManager = new ActivityManager("src/test/resources/activities_test.json");
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
 
     Activity postponedActivity = new Activity();
     postponedActivity.setActivityID(UUID.randomUUID().toString());
@@ -415,8 +416,7 @@ public class ActivityManagerTests {
    */
   @Test
   public void addCustomActivityWithImage() {
-    ActivityManager activityManager = new ActivityManager(
-        "src/test/resources/activities_test.json");
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
     activityManager.getActivityRegister().clear();
 
     Activity customActivity = activityManager.createActivity("Custom activity",
@@ -436,15 +436,13 @@ public class ActivityManagerTests {
    */
   @Test
   public void cantCreateSaveFile_shouldThrow() throws IOException {
-    String filePath = "src/test/resources/activities_test.json";
+    ActivityManager activityManager = spy(new ActivityManager(SAVE_FILE_PATH));
 
-    ActivityManager activityManager = spy(new ActivityManager(filePath));
-
-    when(activityManager.fileExists(filePath)).thenReturn(false);
-    doThrow(IOException.class).when(activityManager).createFile(filePath);
+    when(activityManager.fileExists(SAVE_FILE_PATH)).thenReturn(false);
+    doThrow(IOException.class).when(activityManager).createFile(SAVE_FILE_PATH);
 
     try {
-      activityManager.saveActivitiesToDisc(filePath);
+      activityManager.saveActivitiesToDisc(SAVE_FILE_PATH);
     } catch (RuntimeException e) {
       return;
     }
@@ -459,14 +457,12 @@ public class ActivityManagerTests {
    */
   @Test
   public void cantReadExistingSaveFile_shouldThrow() {
-    String filePath = "src/test/resources/activities_test.json";
+    ActivityManager activityManager = spy(new ActivityManager(SAVE_FILE_PATH));
 
-    ActivityManager activityManager = spy(new ActivityManager(filePath));
-
-    when(activityManager.fileExists(filePath)).thenReturn(true);
+    when(activityManager.fileExists(SAVE_FILE_PATH)).thenReturn(true);
 
     try {
-      activityManager.readActivitiesFromDisc(filePath);
+      activityManager.readActivitiesFromDisc(SAVE_FILE_PATH);
     } catch (RuntimeException e) {
       return;
     }
@@ -481,12 +477,11 @@ public class ActivityManagerTests {
    */
   @Test
   public void emptyExistingSaveFile_ShouldNotThrow() throws IOException {
-    String filePath = "src/test/resources/activities_test.json";
-    new File(filePath).getAbsoluteFile().createNewFile();
+    new File(SAVE_FILE_PATH).getAbsoluteFile().createNewFile();
 
-    ActivityManager activityManager = new ActivityManager(filePath);
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
 
-    activityManager.readActivitiesFromDisc(filePath);
+    activityManager.readActivitiesFromDisc(SAVE_FILE_PATH);
   }
 
   /**
@@ -496,8 +491,7 @@ public class ActivityManagerTests {
    */
   @Test
   public void getActivity_NoActivitiesAvailable_ShouldReturnEmptyOptional() {
-    String filePath = "src/test/resources/activities_test.json";
-    ActivityManager activityManager = new ActivityManager(filePath);
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
 
     Optional<Activity> returnValue = activityManager.getActivity();
 
@@ -511,8 +505,7 @@ public class ActivityManagerTests {
    */
   @Test
   public void getActivityById_NoActivityWithSpecifiedIdExists_ShouldReturnEmptyOptional() {
-    String filePath = "src/test/resources/activities_test.json";
-    ActivityManager activityManager = new ActivityManager(filePath);
+    ActivityManager activityManager = new ActivityManager(SAVE_FILE_PATH);
 
     Optional<Activity> returnValue = activityManager.getActivity("activity_that_doesnt_exist");
 
@@ -525,9 +518,8 @@ public class ActivityManagerTests {
    * @author Johannes Rosengren
    */
   @Test
-  public void createActivityCantSaveActivity_ShouldThrowError() {
-    String filePath = "src/test/resources/activities_test.json";
-    ActivityManager activityManager = spy(new ActivityManager(filePath));
+  public void createActivityCantSaveActivity_ShouldThrow() {
+    ActivityManager activityManager = spy(new ActivityManager(SAVE_FILE_PATH));
 
     when(activityManager.getActivity(anyString())).thenReturn(Optional.empty());
 
@@ -537,7 +529,7 @@ public class ActivityManagerTests {
 
   @AfterEach
   public void cleanUp() {
-    File activitiesFile = new File("src/test/resources/activities_test.json");
+    File activitiesFile = new File(SAVE_FILE_PATH);
     if (activitiesFile.exists()) {
       activitiesFile.delete();
     }
