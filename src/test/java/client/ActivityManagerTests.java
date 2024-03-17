@@ -35,7 +35,7 @@ public class ActivityManagerTests {
   // Tests WITHOUT image
 
   /**
-   * Test case ID: TC-07.
+   * Test case ID: TC-7.
    * Requirements: F25.
    * @author Johannes Rosengren
    */
@@ -76,7 +76,7 @@ public class ActivityManagerTests {
   }
 
   /**
-   * Test case ID: TC-08.
+   * Test case ID: TC-8.
    * Requirements: F26, F27.
    * @author Johannes Rosengren
    */
@@ -133,7 +133,7 @@ public class ActivityManagerTests {
   }
 
   /**
-   * Test case ID: TC-09.
+   * Test case ID: TC-9.
    * Requirements: F25, F26, F27.
    * @author Johannes Rosengren
    */
