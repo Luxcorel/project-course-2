@@ -23,7 +23,7 @@ public class MainPanel extends JPanel {
     setSize(new Dimension(819, 438));
     setBackground(backGroundColor);
     setBorder(BorderFactory.createTitledBorder("Welcome!"));
-    appPanel = new AppPanel(this, clientController, new WelcomeMessageUI(new Timer(), new InspirationalQuotes(), new JDialog()));
+    appPanel = new AppPanel(this, clientController, new WelcomeMessageUI(new Timer(), new InspirationalQuotes(), new JDialog()), new SoundPlayer("src/main/resources/NotisSound.wav"));
     add(appPanel);
   }
 

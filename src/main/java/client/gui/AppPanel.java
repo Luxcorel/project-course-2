@@ -76,10 +76,14 @@ public class AppPanel extends JPanel {
   private int timeLeftInSeconds; // seconds left until the next activity notification should appear
   private int chosenMinuteInterval; // this value is used whenever a new timer is started.
 
-  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI) {
+
+  private final SoundPlayer soundPlayer;
+
+  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI, SoundPlayer soundPlayer) {
     this.mainPanel = mainPanel;
     this.clientController = clientController;
     this.welcomeMessageUI = welcomeMessageUI;
+    this.soundPlayer = soundPlayer;
 
     setSize(new Dimension(819, 438));
     BorderLayout borderLayout = new BorderLayout();
@@ -331,33 +335,13 @@ public class AppPanel extends JPanel {
           "</body>" +
         "</html>";
 
-    String filePath = "src\\main\\resources\\NotisSound.wav";
-
-    try {
-      AudioInputStream audioStream =
-          AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
-
-      Clip clip = AudioSystem.getClip();
-      clip.open(audioStream);
-
-      clip.start();
-
-
-    } catch (UnsupportedAudioFileException e) {
-      throw new RuntimeException(e);
-    } catch (LineUnavailableException e) {
-      throw new RuntimeException(e);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
 
     if (OSDetection.getOS() == OS.WINDOWS) {
       WindowsNotification notification = new WindowsNotification();
       notification.displayNotification("Time To Exercise", "Click to open EDIM");
     }
 
-
+    soundPlayer.play();
 
       int option = JOptionPane.showOptionDialog(this, instructionMessage, activity.getActivityName(),
         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, activityIcon, buttons, null);
