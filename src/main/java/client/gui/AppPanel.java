@@ -38,6 +38,7 @@ import javax.swing.border.BevelBorder;
  *
  * @author Oscar Kareld, Chanon Borgstrom, Carolin Nordstrom, Edvin Topalovic.
  * @author Johannes Rosengren
+ * @author Samuel Carlsson
  * @version 1.1
  */
 public class AppPanel extends JPanel implements IActivityTimerCallback {
@@ -46,7 +47,7 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
   private final ClientController clientController;
   private final IWelcomeMessageUI welcomeMessageUI;
   private final IMessageProvider messageProvider;
-  private IActivityTimer activityTimer;
+  private final IActivityTimer activityTimer;
 
   // left panel and its components
   private JPanel west;
@@ -68,14 +69,14 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
   private JButton appInfo;
   private final Color clrPanels = new Color(142, 166, 192);
 
-  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI, IMessageProvider messageProvider) {
+  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI, IMessageProvider messageProvider, IActivityTimer activityTimer) {
     this.mainPanel = mainPanel;
     this.clientController = clientController;
     this.welcomeMessageUI = welcomeMessageUI;
     this.messageProvider = messageProvider;
 
-    activityTimer = new ActivityTimer();
-    activityTimer.setCallback(this);
+    this.activityTimer = activityTimer;
+    this.activityTimer.setCallback(this);
 
     setSize(new Dimension(819, 438));
     BorderLayout borderLayout = new BorderLayout();

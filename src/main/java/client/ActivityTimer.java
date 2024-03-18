@@ -3,6 +3,12 @@ package client;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * This class is responsible for the timer that counts down from a chosen interval.
+ *
+ * @author Samuel Carlsson
+ * @version 1.0
+ */
 public class ActivityTimer implements IActivityTimer{
   private IActivityTimerCallback callback;
   private Timer timer;
