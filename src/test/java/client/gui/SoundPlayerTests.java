@@ -2,9 +2,16 @@ package client.gui;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import javax.sound.sampled.AudioSystem;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 
+@DisabledIf("noAudioMixerAvailable")
 public class SoundPlayerTests {
+
+  public boolean noAudioMixerAvailable() {
+    return AudioSystem.getMixerInfo().length == 0;
+  }
 
   /**
    * Test case ID: TC-71.
