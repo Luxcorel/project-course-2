@@ -11,16 +11,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import client.Activity;
+import client.ActivityTimer;
 import client.ClientController;
+import client.IActivityTimer;
 import client.external.InspirationalQuotes;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import java.util.Optional;
 import java.util.Timer;
 import javax.swing.JDialog;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class AppPanelTests {
 
@@ -57,8 +57,12 @@ public class AppPanelTests {
     ClientController clientControllerMock = mock(ClientController.class);
     MainPanel mainPanelMock = mock(MainPanel.class);
     WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider();
+    IActivityTimer activityTimer = spy(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
 
-    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock));
+    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock, messageProviderMock, activityTimer, soundPlayerMock));
+    activityTimer.setCallback(appPanel);
 
     Activity randomActivity = new Activity();
     randomActivity.setActivityName("Test activity");
@@ -70,7 +74,8 @@ public class AppPanelTests {
         .when(appPanel)
         .showNotification(randomActivity);
 
-    appPanel.startTimer(0);
+    activityTimer.setTimerInterval(0);
+    activityTimer.startTimer();
 
     verify(appPanel, timeout(1000)).showNotification(randomActivity);
   }
@@ -86,8 +91,12 @@ public class AppPanelTests {
     ClientController clientControllerMock = mock(ClientController.class);
     MainPanel mainPanelMock = mock(MainPanel.class);
     WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider();
+    IActivityTimer activityTimer = spy(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
 
-    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock));
+    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock, messageProviderMock, activityTimer, soundPlayerMock));
+    activityTimer.setCallback(appPanel);
 
     Activity randomActivity = new Activity();
     randomActivity.setActivityName("Test activity");
@@ -99,7 +108,8 @@ public class AppPanelTests {
         .when(appPanel)
         .showNotification(randomActivity);
 
-    appPanel.startTimer(1);
+    activityTimer.setTimerInterval(1);
+    activityTimer.startTimer();
 
     verify(appPanel, after(61_000)).showNotification(randomActivity);
   }
@@ -115,8 +125,12 @@ public class AppPanelTests {
     ClientController clientControllerMock = mock(ClientController.class);
     MainPanel mainPanelMock = mock(MainPanel.class);
     WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider();
+    IActivityTimer activityTimer = spy(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
 
-    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock));
+    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock, messageProviderMock, activityTimer, soundPlayerMock));
+    activityTimer.setCallback(appPanel);
 
     Activity randomActivity = new Activity();
     randomActivity.setActivityName("Test activity");
@@ -128,7 +142,8 @@ public class AppPanelTests {
         .when(appPanel)
         .showNotification(randomActivity);
 
-    appPanel.startTimer(0);
+    activityTimer.setTimerInterval(0);
+    activityTimer.startTimer();
 
     verify(clientControllerMock, timeout(1000)).getActivity();
   }
@@ -144,8 +159,11 @@ public class AppPanelTests {
     ClientController clientControllerMock = mock(ClientController.class);
     MainPanel mainPanelMock = mock(MainPanel.class);
     WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider();
+    IActivityTimer activityTimer = spy(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
 
-    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock));
+    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock, messageProviderMock, activityTimer, soundPlayerMock));
 
     Activity randomActivity = new Activity();
     randomActivity.setActivityName("Test activity");
@@ -157,7 +175,7 @@ public class AppPanelTests {
         .when(appPanel)
         .showNotification(randomActivity);
 
-    assertThrows(IllegalArgumentException.class, () -> appPanel.startTimer(-1));
+    assertThrows(IllegalArgumentException.class, () -> activityTimer.setTimerInterval(-1));
   }
 
   /**
@@ -171,8 +189,13 @@ public class AppPanelTests {
     ClientController clientControllerMock = mock(ClientController.class);
     MainPanel mainPanelMock = mock(MainPanel.class);
     WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider();
+    IActivityTimer activityTimer = spy(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
 
-    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock));
+    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock, messageProviderMock,
+        activityTimer, soundPlayerMock));
+    activityTimer.setCallback(appPanel);
 
     Activity randomActivity = new Activity();
     randomActivity.setActivityName("Test activity");
@@ -184,8 +207,10 @@ public class AppPanelTests {
         .when(appPanel)
         .showNotification(randomActivity);
 
-    appPanel.startTimer(1);
-    appPanel.startTimer(0);
+    activityTimer.setTimerInterval(1);
+    activityTimer.startTimer();
+    activityTimer.setTimerInterval(0);
+    activityTimer.startTimer();
 
     verify(appPanel, timeout(1000)).showNotification(randomActivity);
   }
@@ -201,8 +226,11 @@ public class AppPanelTests {
     ClientController clientControllerMock = mock(ClientController.class);
     MainPanel mainPanelMock = mock(MainPanel.class);
     WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider();
+    IActivityTimer activityTimerMock = mock(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
 
-    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock));
+    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock, messageProviderMock, activityTimerMock, soundPlayerMock));
 
     Activity randomActivity = new Activity();
     randomActivity.setActivityName("Test activity");
@@ -214,7 +242,7 @@ public class AppPanelTests {
         .when(appPanel)
         .showNotification(randomActivity);
 
-    assertThrows(IllegalArgumentException.class, () -> appPanel.setTimerInterval(-1));
+    assertThrows(IllegalArgumentException.class, () -> appPanel.setTitleToInterval(-1));
   }
 
   /**
@@ -228,8 +256,11 @@ public class AppPanelTests {
     ClientController clientControllerMock = mock(ClientController.class);
     MainPanel mainPanelMock = mock(MainPanel.class);
     WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider();
+    IActivityTimer activityTimerMock = mock(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
 
-    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock));
+    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock, messageProviderMock, activityTimerMock, soundPlayerMock));
 
     Activity randomActivity = new Activity();
     randomActivity.setActivityName("Test activity");
@@ -241,7 +272,7 @@ public class AppPanelTests {
         .when(appPanel)
         .showNotification(randomActivity);
 
-    appPanel.setTimerInterval(1);
+    appPanel.setTitleToInterval(1);
 
     verify(clientControllerMock).setTitle(anyString());
   }
@@ -257,8 +288,11 @@ public class AppPanelTests {
     ClientController clientControllerMock = mock(ClientController.class);
     MainPanel mainPanelMock = mock(MainPanel.class);
     WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider();
+    IActivityTimer activityTimerMock = mock(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
 
-    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock));
+    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock, messageProviderMock, activityTimerMock, soundPlayerMock));
 
     Activity randomActivity = new Activity();
     randomActivity.setActivityName("Test activity");
@@ -270,7 +304,7 @@ public class AppPanelTests {
         .when(appPanel)
         .showNotification(randomActivity);
 
-    appPanel.setTimerInterval(2);
+    appPanel.setTitleToInterval(2);
 
     verify(clientControllerMock).setTitle(anyString());
   }

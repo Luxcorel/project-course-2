@@ -36,7 +36,7 @@ public class CustomActivityUITests {
     when(mock.addActivity("", "", ""))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -70,7 +70,7 @@ public class CustomActivityUITests {
     when(mock.addActivity(null, null, null))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -108,7 +108,7 @@ public class CustomActivityUITests {
     when(mock.addActivity("Test name", "", ""))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -143,7 +143,7 @@ public class CustomActivityUITests {
     when(mock.addActivity("Test name", "", "Test info"))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -179,7 +179,7 @@ public class CustomActivityUITests {
     when(mock.addActivity("Test name", "Test instruction", ""))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -215,7 +215,7 @@ public class CustomActivityUITests {
     when(mock.addActivity("", "Test instruction", ""))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -250,7 +250,7 @@ public class CustomActivityUITests {
     when(mock.addActivity("", "Test instruction", "Test info"))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -286,7 +286,7 @@ public class CustomActivityUITests {
     when(mock.addActivity("", "", "Test info"))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -321,7 +321,7 @@ public class CustomActivityUITests {
     when(mock.addActivity("", "", ""))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -354,7 +354,7 @@ public class CustomActivityUITests {
         "src/test/resources/test_image.png"))
         .thenThrow(new AssertionError("Should not have added activity on cancel"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -422,7 +422,7 @@ public class CustomActivityUITests {
     when(mock.addActivity("Test name", "Test instruction", "Test info"))
         .thenReturn(expected);
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -467,7 +467,7 @@ public class CustomActivityUITests {
         "src/test/resources/test_image.png"))
         .thenReturn(expected);
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -515,7 +515,7 @@ public class CustomActivityUITests {
     when(mock.addActivity("Test name", "Test instruction", "Test info"))
         .thenReturn(expected);
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -597,7 +597,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity("", "", ""))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -631,7 +631,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity(null, null, null))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -669,7 +669,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity("Test name", "", ""))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -704,7 +704,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity("Test name", "", "Test info"))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -740,7 +740,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity("Test name", "Test instruction", ""))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -776,7 +776,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity("", "Test instruction", ""))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -811,7 +811,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity("", "Test instruction", "Test info"))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -847,7 +847,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity("", "", "Test info"))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -882,7 +882,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity("", "", ""))
         .thenThrow(new AssertionError("Should not have tried to add incomplete activity"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -915,7 +915,7 @@ public class CustomActivityUITests {
         "src/test/resources/test_image.png"))
         .thenThrow(new AssertionError("Should not have added activity on cancel"));
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -983,7 +983,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity("Test name", "Test instruction", "Test info"))
         .thenReturn(expected);
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -1028,7 +1028,7 @@ public class CustomActivityUITests {
         "src/test/resources/test_image.png"))
         .thenReturn(expected);
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
@@ -1076,7 +1076,7 @@ public class CustomActivityUITests {
     when(mock.packageActivity("Test name", "Test instruction", "Test info"))
         .thenReturn(expected);
 
-    IMessageProvider messageProvider = new IMessageProvider() {
+    IMessageProvider messageProvider = new TestMessageProvider() {
       @Override
       public int showConfirmDialog(Component parentComponent, Object message, String title,
           int optionType, int messageType) {
