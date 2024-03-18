@@ -45,6 +45,7 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
   private final MainPanel mainPanel;
   private final ClientController clientController;
   private final IWelcomeMessageUI welcomeMessageUI;
+  private final IMessageProvider messageProvider;
   private IActivityTimer activityTimer;
 
   // left panel and its components
@@ -67,12 +68,14 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
   private JButton appInfo;
   private final Color clrPanels = new Color(142, 166, 192);
 
-  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI) {
+  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI, IMessageProvider messageProvider) {
     this.mainPanel = mainPanel;
     this.clientController = clientController;
     this.welcomeMessageUI = welcomeMessageUI;
+    this.messageProvider = messageProvider;
 
-    activityTimer = new ActivityTimer(this);
+    activityTimer = new ActivityTimer();
+    activityTimer.setCallback(this);
 
     setSize(new Dimension(819, 438));
     BorderLayout borderLayout = new BorderLayout();
@@ -138,7 +141,7 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
       Optional<Activity> activityOptional = addCustomActivity();
       if (activityOptional.isPresent()) {
         Activity activity = activityOptional.get();
-        JOptionPane.showMessageDialog(this, "New Activity Added: " + activity.getActivityName());
+        messageProvider.showMessageDialog(this, "New Activity Added: " + activity.getActivityName());
       }
 
       addCustomActivity.setEnabled(true);
@@ -193,7 +196,7 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
   public void timesUpCallback() {
     Optional<Activity> activity = clientController.getActivity();
     if (activity.isEmpty()) {
-      JOptionPane.showMessageDialog(this,
+      messageProvider.showMessageDialog(this,
           "Could not find any saved activities! Add a new activity before you start the timer.",
           "No Activities Found", JOptionPane.ERROR_MESSAGE);
 
@@ -300,7 +303,7 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
       notification.displayNotification("Time To Exercise", "Click to open EDIM");
     }
 
-    int option = JOptionPane.showOptionDialog(this, instructionMessage, activity.getActivityName(),
+    int option = messageProvider.showOptionDialog(this, instructionMessage, activity.getActivityName(),
         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, activityIcon, buttons, null);
 
     switch (option) {

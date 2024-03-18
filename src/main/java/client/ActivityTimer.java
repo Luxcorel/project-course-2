@@ -4,17 +4,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ActivityTimer implements IActivityTimer{
-  private final IActivityTimerCallback callback;
+  private IActivityTimerCallback callback;
   private Timer timer;
   private int timeLeftInSeconds;
   private int chosenMinuteInterval;
 
-  public ActivityTimer(IActivityTimerCallback callback) {
-    this.callback = callback;
-  }
-
   @Override
   public void startTimer() {
+    if(callback == null) {
+      throw new IllegalStateException("Callback not set");
+    }
+
     if (timer != null) {
       timer.cancel();
     }
@@ -43,6 +43,10 @@ public class ActivityTimer implements IActivityTimer{
     if (timer != null) {
       timer.cancel();
     }
+  }
+
+  public void setCallback(IActivityTimerCallback callback) {
+    this.callback = callback;
   }
 
   @Override

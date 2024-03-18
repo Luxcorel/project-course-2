@@ -5,4 +5,5 @@ public interface IActivityTimer {
   void stopTimer();
   void setTimerInterval(int minutes);
   int getTimerInterval();
+  void setCallback(IActivityTimerCallback callback);
 }
