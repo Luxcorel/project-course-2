@@ -322,7 +322,7 @@ public class AppPanel extends JPanel {
    * @implNote Requirements: F010a
    */
   public void showNotification(Activity activity) {
-    Toolkit.getDefaultToolkit().beep();
+
     ImageIcon activityIcon = activity.getActivityImage().isPresent() ? createActivityIcon(activity) : null;
     String[] buttons = {"I have completed the activity!", "Remind me in 5 minutes",};
     String instruction = activity.getActivityInstruction();
