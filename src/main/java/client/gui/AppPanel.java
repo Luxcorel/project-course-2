@@ -3,6 +3,8 @@ package client.gui;
 import client.Activity;
 import client.ActivityListItem;
 import client.ClientController;
+import client.IActivityTimer;
+import client.IActivityTimerCallback;
 import client.OSDetection;
 import client.OSDetection.OS;
 import client.notifications.WindowsNotification;
@@ -12,15 +14,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Toolkit;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Timer;
-import java.util.TimerTask;
-import javax.sound.sampled.*;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -34,7 +30,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
 /**
@@ -42,13 +37,17 @@ import javax.swing.border.BevelBorder;
  *
  * @author Oscar Kareld, Chanon Borgstrom, Carolin Nordstrom, Edvin Topalovic.
  * @author Johannes Rosengren
+ * @author Samuel Carlsson
  * @version 1.1
  */
-public class AppPanel extends JPanel {
+public class AppPanel extends JPanel implements IActivityTimerCallback {
 
   private final MainPanel mainPanel;
   private final ClientController clientController;
   private final IWelcomeMessageUI welcomeMessageUI;
+  private final IMessageProvider messageProvider;
+  private final IActivityTimer activityTimer;
+  private final SoundPlayer soundPlayer;
 
   // left panel and its components
   private JPanel west;
@@ -68,22 +67,19 @@ public class AppPanel extends JPanel {
   private JPanel south;
   private JButton logOut;
   private JButton appInfo;
-
   private final Color clrPanels = new Color(142, 166, 192);
 
-  // timer keeping track of the time left until the next activity notification should appear
-  private Timer timer;
-  private int timeLeftInSeconds; // seconds left until the next activity notification should appear
-  private int chosenMinuteInterval; // this value is used whenever a new timer is started.
+  public AppPanel(MainPanel mainPanel, ClientController clientController,
+      IWelcomeMessageUI welcomeMessageUI, IMessageProvider messageProvider,
+      IActivityTimer activityTimer, SoundPlayer soundPlayer) {
 
-
-  private final SoundPlayer soundPlayer;
-
-  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI, SoundPlayer soundPlayer) {
     this.mainPanel = mainPanel;
     this.clientController = clientController;
     this.welcomeMessageUI = welcomeMessageUI;
+    this.messageProvider = messageProvider;
     this.soundPlayer = soundPlayer;
+    this.activityTimer = activityTimer;
+    this.activityTimer.setCallback(this);
 
     setSize(new Dimension(819, 438));
     BorderLayout borderLayout = new BorderLayout();
@@ -132,9 +128,10 @@ public class AppPanel extends JPanel {
       startTimer.setText("Change Interval");
 
       int minutes = (int) timerIntervalSelector.getValue();
-      setTimerInterval(minutes);
+      activityTimer.setTimerInterval(minutes);
+      setTitleToInterval(minutes);
 
-      startTimer(chosenMinuteInterval);
+      activityTimer.startTimer();
     });
     centerPnl.add(startTimer, BorderLayout.SOUTH);
 
@@ -148,7 +145,7 @@ public class AppPanel extends JPanel {
       Optional<Activity> activityOptional = addCustomActivity();
       if (activityOptional.isPresent()) {
         Activity activity = activityOptional.get();
-        JOptionPane.showMessageDialog(this, "New Activity Added: " + activity.getActivityName());
+        messageProvider.showMessageDialog(this, "New Activity Added: " + activity.getActivityName());
       }
 
       addCustomActivity.setEnabled(true);
@@ -185,14 +182,33 @@ public class AppPanel extends JPanel {
    *
    * @param minutes the timer interval in minutes
    */
-  public void setTimerInterval(int minutes) {
-    this.chosenMinuteInterval = minutes;
-
+  public void setTitleToInterval(int minutes) {
     clientController.setTitle(
-        chosenMinuteInterval == 1 ?
-            "EDIM | Active Time Interval: " + chosenMinuteInterval + " Minute"
-            : "EDIM | Active Time Interval: " + chosenMinuteInterval + " Minutes"
+        minutes == 1 ?
+            "EDIM | Active Time Interval: " + minutes + " Minute"
+            : "EDIM | Active Time Interval: " + minutes + " Minutes"
     );
+  }
+
+  @Override
+  public void timeRemainingCallback(int remainingMinutes, int remainingSeconds) {
+    String time = String.format("Timer: %d:%02d", remainingMinutes, remainingSeconds);
+    timeLeft.setText(time);
+  }
+
+  @Override
+  public void timesUpCallback() {
+    Optional<Activity> activity = clientController.getActivity();
+    if (activity.isEmpty()) {
+      messageProvider.showMessageDialog(this,
+          "Could not find any saved activities! Add a new activity before you start the timer.",
+          "No Activities Found", JOptionPane.ERROR_MESSAGE);
+
+      startTimer.setText("Start Timer");
+      return;
+    }
+
+    showNotification(activity.get());
   }
 
   /**
@@ -206,55 +222,6 @@ public class AppPanel extends JPanel {
   public Optional<Activity> addCustomActivity() {
     CustomActivityUI customActivityUI = new CustomActivityUI(this, clientController, new MessageProvider());
     return customActivityUI.addCustomActivity();
-  }
-
-  /**
-   * Starts a timer with the given number of minutes.
-   * If a timer is already running, it is canceled and a new one is started.
-   * The timer will show a notification when it reaches 0.
-   *
-   * @param minutes the number of minutes to start the timer with
-   * @author Johannes Rosengren
-   */
-  public void startTimer(int minutes) {
-    if (timer != null) {
-      timer.cancel();
-    }
-
-    timeLeftInSeconds = (minutes * 60);
-
-    timer = new Timer();
-    timer.scheduleAtFixedRate(new TimerTask() {
-      public void run() {
-        int minutes = timeLeftInSeconds / 60;
-        int seconds = timeLeftInSeconds % 60;
-
-        if (timeLeftInSeconds == 0) {
-          String time = String.format("Timer: %d:%02d", minutes, seconds);
-          timeLeft.setText(time);
-          SwingUtilities.invokeLater(
-              () -> {
-                Optional<Activity> activity = clientController.getActivity();
-                if (activity.isEmpty()) {
-                  JOptionPane.showMessageDialog(AppPanel.this,
-                      "Could not find any saved activities! Add a new activity before you start the timer.",
-                      "No Activities Found", JOptionPane.ERROR_MESSAGE);
-
-                  startTimer.setText("Start Timer");
-                  return;
-                }
-
-                showNotification(activity.get());
-              });
-          timer.cancel();
-        }
-
-        timeLeftInSeconds--;
-
-        String time = String.format("Timer: %d:%02d", minutes, seconds);
-        timeLeft.setText(time);
-      }
-    }, 0, 1000);
   }
 
   private void createActivityInfoPanel() {
@@ -343,19 +310,22 @@ public class AppPanel extends JPanel {
 
     soundPlayer.play();
 
-      int option = JOptionPane.showOptionDialog(this, instructionMessage, activity.getActivityName(),
-        JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, activityIcon, buttons, null);
+    int option = messageProvider.showOptionDialog(this, instructionMessage,
+        activity.getActivityName(), JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+        activityIcon, buttons, null);
 
     switch (option) {
       case JOptionPane.NO_OPTION -> {
         clientController.enqueueActivity(activity);
-        startTimer(5);
+        activityTimer.setTimerInterval(5);
+        setTitleToInterval(5);
+        activityTimer.startTimer();
       }
       case JOptionPane.YES_OPTION -> {
         activity.setCompleted(true);
         addToActivityHistory(activity);
 
-        startTimer(chosenMinuteInterval);
+        activityTimer.startTimer();
       }
     }
   }
