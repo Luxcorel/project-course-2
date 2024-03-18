@@ -2,7 +2,6 @@ package client.gui;
 
 import client.Activity;
 import client.ActivityListItem;
-import client.ActivityTimer;
 import client.ClientController;
 import client.IActivityTimer;
 import client.IActivityTimerCallback;
@@ -15,9 +14,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Timer;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -48,6 +47,7 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
   private final IWelcomeMessageUI welcomeMessageUI;
   private final IMessageProvider messageProvider;
   private final IActivityTimer activityTimer;
+  private final SoundPlayer soundPlayer;
 
   // left panel and its components
   private JPanel west;
@@ -69,12 +69,15 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
   private JButton appInfo;
   private final Color clrPanels = new Color(142, 166, 192);
 
-  public AppPanel(MainPanel mainPanel, ClientController clientController, IWelcomeMessageUI welcomeMessageUI, IMessageProvider messageProvider, IActivityTimer activityTimer) {
+  public AppPanel(MainPanel mainPanel, ClientController clientController,
+      IWelcomeMessageUI welcomeMessageUI, IMessageProvider messageProvider,
+      IActivityTimer activityTimer, SoundPlayer soundPlayer) {
+
     this.mainPanel = mainPanel;
     this.clientController = clientController;
     this.welcomeMessageUI = welcomeMessageUI;
     this.messageProvider = messageProvider;
-
+    this.soundPlayer = soundPlayer;
     this.activityTimer = activityTimer;
     this.activityTimer.setCallback(this);
 
@@ -286,7 +289,7 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
    * @implNote Requirements: F010a
    */
   public void showNotification(Activity activity) {
-    Toolkit.getDefaultToolkit().beep();
+
     ImageIcon activityIcon = activity.getActivityImage().isPresent() ? createActivityIcon(activity) : null;
     String[] buttons = {"I have completed the activity!", "Remind me in 5 minutes",};
     String instruction = activity.getActivityInstruction();
@@ -299,13 +302,17 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
           "</body>" +
         "</html>";
 
+
     if (OSDetection.getOS() == OS.WINDOWS) {
       WindowsNotification notification = new WindowsNotification();
       notification.displayNotification("Time To Exercise", "Click to open EDIM");
     }
 
-    int option = messageProvider.showOptionDialog(this, instructionMessage, activity.getActivityName(),
-        JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, activityIcon, buttons, null);
+    soundPlayer.play();
+
+    int option = messageProvider.showOptionDialog(this, instructionMessage,
+        activity.getActivityName(), JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+        activityIcon, buttons, null);
 
     switch (option) {
       case JOptionPane.NO_OPTION -> {
