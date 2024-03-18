@@ -9,7 +9,7 @@ import org.junit.jupiter.api.condition.DisabledIf;
 @DisabledIf("noAudioMixerAvailable")
 public class SoundPlayerTests {
 
-  public boolean noAudioMixerAvailable() {
+  public static boolean noAudioMixerAvailable() {
     return AudioSystem.getMixerInfo().length == 0;
   }
 
