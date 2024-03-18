@@ -17,9 +17,12 @@ import client.IActivityTimer;
 import client.external.InspirationalQuotes;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import java.awt.Component;
 import java.util.Optional;
 import java.util.Timer;
+import javax.swing.Icon;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import org.junit.jupiter.api.Test;
 
 public class AppPanelTests {
@@ -307,6 +310,38 @@ public class AppPanelTests {
     appPanel.setTitleToInterval(2);
 
     verify(clientControllerMock).setTitle(anyString());
+  }
+
+  /**
+   * Test case ID: TC-70.
+   * Requirements: F034.
+   *
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void activityNotificationPlaysNotificationSound() {
+    ClientController clientControllerMock = mock(ClientController.class);
+    MainPanel mainPanelMock = mock(MainPanel.class);
+    WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IActivityTimer activityTimerMock = mock(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider() {
+      @Override
+      public int showOptionDialog(Component parentComponent, Object message, String title,
+          int optionType, int messageType, Icon icon, Object[] options, Object initialValue) {
+        return -1;
+      }
+    };
+
+    Activity activity = new Activity();
+    activity.setActivityName("Test activity");
+    activity.setActivityInstruction("Test instruction");
+    activity.setActivityInfo("Test info");
+
+    AppPanel appPanel = new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock, messageProviderMock, activityTimerMock, soundPlayerMock);
+    appPanel.showNotification(activity);
+
+    verify(soundPlayerMock).play();
   }
 
 }
