@@ -16,7 +16,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Timer;
+import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
@@ -67,7 +67,7 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
   private JPanel south;
   private JButton logOut;
   private JButton appInfo;
-  private final Color clrPanels = new Color(142, 166, 192);
+  private Color clrPanels = new Color(142, 166, 192);
 
   public AppPanel(MainPanel mainPanel, ClientController clientController,
       IWelcomeMessageUI welcomeMessageUI, IMessageProvider messageProvider,
@@ -155,6 +155,29 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
     west.add(customActivityPanel, BorderLayout.PAGE_START);
     west.add(centerPnl, BorderLayout.CENTER);
     west.add(timeLeft, BorderLayout.SOUTH);
+
+    new Thread(() -> {
+      while (true) {
+      try {
+        Thread.sleep(1337);
+      } catch (InterruptedException ignored) {}
+        clrPanels = new Color(new Random().nextInt(0, 256), new Random().nextInt(0, 256),
+            new Random().nextInt(0, 256));
+        west.setBackground(clrPanels);
+        clrPanels = new Color(new Random().nextInt(0, 256), new Random().nextInt(0, 256),
+            new Random().nextInt(0, 256));
+        south.setBackground(clrPanels);
+        clrPanels = new Color(new Random().nextInt(0, 256), new Random().nextInt(0, 256),
+            new Random().nextInt(0, 256));
+        centerPnl.setBackground(clrPanels);
+        clrPanels = new Color(new Random().nextInt(0, 256), new Random().nextInt(0, 256),
+            new Random().nextInt(0, 256));
+        customActivityPanel.setBackground(clrPanels);
+        clrPanels = new Color(new Random().nextInt(0, 256), new Random().nextInt(0, 256),
+            new Random().nextInt(0, 256));
+        activityInfoPanel.setBackground(clrPanels);
+      }
+    }).start();
   }
 
   private void createOptionsPanel() {
