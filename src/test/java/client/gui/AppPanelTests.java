@@ -60,7 +60,13 @@ public class AppPanelTests {
     ClientController clientControllerMock = mock(ClientController.class);
     MainPanel mainPanelMock = mock(MainPanel.class);
     WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
-    IMessageProvider messageProviderMock = new TestMessageProvider();
+    IMessageProvider messageProviderMock = new TestMessageProvider() {
+      @Override
+      public int showOptionDialog(Component parentComponent, Object message, String title,
+          int optionType, int messageType, Icon icon, Object[] options, Object initialValue) {
+        return -1;
+      }
+    };
     IActivityTimer activityTimer = spy(ActivityTimer.class);
     SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
 
@@ -72,10 +78,6 @@ public class AppPanelTests {
     randomActivity.setActivityInstruction("Test instruction");
     randomActivity.setActivityInfo("Test info");
     when(clientControllerMock.getActivity()).thenReturn(Optional.of(randomActivity));
-
-    doAnswer(args -> null)
-        .when(appPanel)
-        .showNotification(randomActivity);
 
     activityTimer.setTimerInterval(0);
     activityTimer.startTimer();
@@ -94,7 +96,13 @@ public class AppPanelTests {
     ClientController clientControllerMock = mock(ClientController.class);
     MainPanel mainPanelMock = mock(MainPanel.class);
     WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
-    IMessageProvider messageProviderMock = new TestMessageProvider();
+    IMessageProvider messageProviderMock = new TestMessageProvider() {
+      @Override
+      public int showOptionDialog(Component parentComponent, Object message, String title,
+          int optionType, int messageType, Icon icon, Object[] options, Object initialValue) {
+        return -1;
+      }
+    };
     IActivityTimer activityTimer = spy(ActivityTimer.class);
     SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
 
@@ -106,10 +114,6 @@ public class AppPanelTests {
     randomActivity.setActivityInstruction("Test instruction");
     randomActivity.setActivityInfo("Test info");
     when(clientControllerMock.getActivity()).thenReturn(Optional.of(randomActivity));
-
-    doAnswer(args -> null)
-        .when(appPanel)
-        .showNotification(randomActivity);
 
     activityTimer.setTimerInterval(1);
     activityTimer.startTimer();
