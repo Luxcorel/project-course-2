@@ -18,6 +18,12 @@ This project requires Java >= 21 to be installed.
 
 3. Build and run the project using Gradle:
 
+   MacOS/Unix:
    ```bash
    ./gradlew run
+   ```
+   
+   Windows:
+   ```bash
+   gradlew run
    ```
