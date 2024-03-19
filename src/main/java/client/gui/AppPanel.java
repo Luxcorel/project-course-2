@@ -183,6 +183,9 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
    * @param minutes the timer interval in minutes
    */
   public void setTitleToInterval(int minutes) {
+    if (minutes < 0) {
+      throw new IllegalArgumentException("Interval cannot be negative");
+    }
     clientController.setTitle(
         minutes == 1 ?
             "EDIM | Active Time Interval: " + minutes + " Minute"
