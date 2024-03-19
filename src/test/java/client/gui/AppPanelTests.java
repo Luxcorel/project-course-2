@@ -1,6 +1,6 @@
 package client.gui;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.doAnswer;
@@ -346,6 +346,41 @@ public class AppPanelTests {
     appPanel.showNotification(activity);
 
     verify(soundPlayerMock).play();
+  }
+
+  /**
+   * Test case ID: TC-74.
+   * Requirements: F010b.
+   *
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void postponeActivityShouldPostponeActivity() {
+    ClientController clientControllerMock = mock(ClientController.class);
+    MainPanel mainPanelMock = mock(MainPanel.class);
+    WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IActivityTimer activityTimer = spy(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider() {
+      @Override
+      public int showOptionDialog(Component parentComponent, Object message, String title,
+          int optionType, int messageType, Icon icon, Object[] options, Object initialValue) {
+        return JOptionPane.NO_OPTION;
+      }
+    };
+
+    Activity activityToPostpone = new Activity();
+    activityToPostpone.setActivityName("Test activity");
+    activityToPostpone.setActivityInstruction("Test instruction");
+    activityToPostpone.setActivityInfo("Test info");
+    when(clientControllerMock.getActivity()).thenReturn(Optional.of(activityToPostpone));
+
+    AppPanel appPanel = new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock, messageProviderMock,
+        activityTimer, soundPlayerMock);
+    activityTimer.setTimerInterval(0);
+    activityTimer.startTimer();
+
+    verify(clientControllerMock, timeout(1000)).enqueueActivity(activityToPostpone);
   }
 
 }
