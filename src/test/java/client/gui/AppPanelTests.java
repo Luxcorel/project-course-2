@@ -1,6 +1,9 @@
 package client.gui;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.after;
 import static org.mockito.Mockito.doAnswer;
@@ -448,6 +451,73 @@ public class AppPanelTests {
     toDisplay.setActivityImage("src/test/resources/test_image.png");
 
     appPanel.showNotification(toDisplay);
+  }
+
+  /**
+   * Test case ID: TC-77.
+   * Requirements: F010c.
+   *
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void activityWithoutImageGetsMarkedAsCompletedWhenPressingCompletedActivityInActivityNotification() {
+    ClientController clientControllerMock = mock(ClientController.class);
+    MainPanel mainPanelMock = mock(MainPanel.class);
+    WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IActivityTimer activityTimer = spy(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
+    IMessageProvider messageProviderMock = mock(TestMessageProvider.class);
+    when(messageProviderMock.showOptionDialog(any(), any(), anyString(), anyInt(), anyInt(), any(), any(), any())).thenReturn(JOptionPane.OK_OPTION, -1);
+
+    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock,
+        messageProviderMock, activityTimer, soundPlayerMock));
+    activityTimer.setCallback(appPanel);
+
+    Activity activity = new Activity();
+    activity.setActivityName("Test activity");
+    activity.setActivityInstruction("Test instruction");
+    activity.setActivityInfo("Test info");
+    when(clientControllerMock.getActivity()).thenReturn(Optional.of(activity));
+
+    activityTimer.setTimerInterval(0);
+    activityTimer.startTimer();
+
+    verify(appPanel, timeout(1000)).addToActivityHistory(activity);
+    assertTrue(activity.isCompleted());
+  }
+
+  /**
+   * Test case ID: TC-78.
+   * Requirements: F010c.
+   *
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void activityWithImageGetsMarkedAsCompletedWhenPressingCompletedActivityInActivityNotification() {
+    ClientController clientControllerMock = mock(ClientController.class);
+    MainPanel mainPanelMock = mock(MainPanel.class);
+    WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IActivityTimer activityTimer = spy(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
+    IMessageProvider messageProviderMock = mock(TestMessageProvider.class);
+    when(messageProviderMock.showOptionDialog(any(), any(), anyString(), anyInt(), anyInt(), any(), any(), any())).thenReturn(JOptionPane.OK_OPTION, -1);
+
+    AppPanel appPanel = spy(new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock,
+        messageProviderMock, activityTimer, soundPlayerMock));
+    activityTimer.setCallback(appPanel);
+
+    Activity activity = new Activity();
+    activity.setActivityName("Test activity");
+    activity.setActivityInstruction("Test instruction");
+    activity.setActivityInfo("Test info");
+    activity.setActivityImage("src/test/resources/test_image.png");
+    when(clientControllerMock.getActivity()).thenReturn(Optional.of(activity));
+
+    activityTimer.setTimerInterval(0);
+    activityTimer.startTimer();
+
+    verify(appPanel, timeout(1000)).addToActivityHistory(activity);
+    assertTrue(activity.isCompleted());
   }
 
 }
