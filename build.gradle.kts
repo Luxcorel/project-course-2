@@ -24,3 +24,8 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.register<JavaExec>("run") {
+    mainClass = "src/main/java/client/StartClient.java"
+    classpath = sourceSets["main"].runtimeClasspath
+}
