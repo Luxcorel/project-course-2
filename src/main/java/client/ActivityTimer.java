@@ -57,6 +57,9 @@ public class ActivityTimer implements IActivityTimer{
 
   @Override
   public void setTimerInterval(int minutes) {
+    if (minutes < 0) {
+      throw new IllegalArgumentException("Interval cannot be negative");
+    }
     chosenMinuteInterval = minutes;
   }
 
