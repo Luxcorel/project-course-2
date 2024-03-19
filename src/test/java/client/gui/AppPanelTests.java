@@ -383,4 +383,71 @@ public class AppPanelTests {
     verify(clientControllerMock, timeout(1000)).enqueueActivity(activityToPostpone);
   }
 
+  /**
+   * Test case ID: TC-75.
+   * Requirements: F010a.
+   *
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void showActivityNotificationWithoutImage_ShouldNotThrow() {
+    ClientController clientControllerMock = mock(ClientController.class);
+    MainPanel mainPanelMock = mock(MainPanel.class);
+    WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IActivityTimer activityTimerMock = mock(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider() {
+      @Override
+      public int showOptionDialog(Component parentComponent, Object message, String title,
+          int optionType, int messageType, Icon icon, Object[] options, Object initialValue) {
+        return -1;
+      }
+    };
+
+    AppPanel appPanel = new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock,
+        messageProviderMock,
+        activityTimerMock, soundPlayerMock);
+
+    Activity toDisplay = new Activity();
+    toDisplay.setActivityName("Test activity");
+    toDisplay.setActivityInstruction("Test instruction");
+    toDisplay.setActivityInfo("Test info");
+
+    appPanel.showNotification(toDisplay);
+  }
+
+  /**
+   * Test case ID: TC-76.
+   * Requirements: F010a.
+   *
+   * @author Johannes Rosengren
+   */
+  @Test
+  public void showActivityNotificationWithImage_ShouldNotThrow() {
+    ClientController clientControllerMock = mock(ClientController.class);
+    MainPanel mainPanelMock = mock(MainPanel.class);
+    WelcomeMessageUI welcomeMessageMock = mock(WelcomeMessageUI.class);
+    IActivityTimer activityTimerMock = mock(ActivityTimer.class);
+    SoundPlayer soundPlayerMock = mock(SoundPlayer.class);
+    IMessageProvider messageProviderMock = new TestMessageProvider() {
+      @Override
+      public int showOptionDialog(Component parentComponent, Object message, String title,
+          int optionType, int messageType, Icon icon, Object[] options, Object initialValue) {
+        return -1;
+      }
+    };
+
+    AppPanel appPanel = new AppPanel(mainPanelMock, clientControllerMock, welcomeMessageMock,
+        messageProviderMock,
+        activityTimerMock, soundPlayerMock);
+
+    Activity toDisplay = new Activity();
+    toDisplay.setActivityName("Test activity");
+    toDisplay.setActivityInstruction("Test instruction");
+    toDisplay.setActivityInfo("Test info");
+    toDisplay.setActivityImage("src/test/resources/test_image.png");
+
+    appPanel.showNotification(toDisplay);
+  }
+
 }
