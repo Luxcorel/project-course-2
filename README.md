@@ -1,8 +1,24 @@
-## Prerequisites
+<div align="center">
 
-This project requires Java >= 21 to be installed.
+# EDIM - Every Day In Motion
+[Features](#features) • [Prerequisites](#prerequisites) • [Getting started](#getting-started) • [Tests](#tests)
 
-## Setup of project
+</div>
+
+![EDIM screenshot](https://lh3.googleusercontent.com/u/0/drive-viewer/AKGpihYbwFitsxjtjIfRX0laAs2hoxZoWNglqb_bB-7yWYEOyM3boaruiFEnr20iZr6U348kvieSpiqjHVaNN1U7UkST5nVtzw=w3024-h1516)
+
+# Features
+
+* Exercise notifications
+* Customizable timer length
+* Add your own exercises
+
+# Prerequisites
+
+* Java >= 21 installed
+* [Git](https://git-scm.com/) installed
+
+# Getting started
 
 1. Clone the repository:
 
@@ -26,4 +42,18 @@ This project requires Java >= 21 to be installed.
    Windows:
    ```bash
    gradlew run
+   ```
+
+# Tests
+
+To run all tests, execute the test task using Gradle: 
+
+   MacOS/Unix:
+   ```bash
+   ./gradlew test
+   ```
+   
+   Windows:
+   ```bash
+   gradlew test
    ```
