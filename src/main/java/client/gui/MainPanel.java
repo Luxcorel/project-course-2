@@ -5,6 +5,7 @@ import client.ClientController;
 import client.external.InspirationalQuotes;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.Random;
 import java.util.Timer;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -22,6 +23,24 @@ public class MainPanel extends JPanel {
     backGroundColor = new Color(134, 144, 154, 145); //64, 87, 139
     setSize(new Dimension(819, 438));
     setBackground(backGroundColor);
+    new Thread(() -> {
+      float hue = 0.0f;
+      float saturation = 1.0f;
+      float brightness = 1.0f;
+      float deltaHue = 0.001f;
+      try {
+        Thread.sleep(25);
+      } catch (InterruptedException ignored) {}
+      while (true) {
+        try {
+          Thread.sleep(25);
+        } catch (InterruptedException ignored) {}
+
+        hue = (hue + deltaHue) % 1.0f;
+        Color color = Color.getHSBColor(hue, saturation, brightness);
+        setBackground(color);
+      }
+    }).start();
     setBorder(BorderFactory.createTitledBorder("Welcome!"));
     appPanel = new AppPanel(
         this,

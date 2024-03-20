@@ -157,25 +157,25 @@ public class AppPanel extends JPanel implements IActivityTimerCallback {
     west.add(timeLeft, BorderLayout.SOUTH);
 
     new Thread(() -> {
+      float hue = 0.0f;
+      float saturation = 1.0f;
+      float brightness = 1.0f;
+      float deltaHue = 0.001f;
+
       while (true) {
-      try {
-        Thread.sleep(1337);
-      } catch (InterruptedException ignored) {}
-        clrPanels = new Color(new Random().nextInt(0, 256), new Random().nextInt(0, 256),
-            new Random().nextInt(0, 256));
-        west.setBackground(clrPanels);
-        clrPanels = new Color(new Random().nextInt(0, 256), new Random().nextInt(0, 256),
-            new Random().nextInt(0, 256));
-        south.setBackground(clrPanels);
-        clrPanels = new Color(new Random().nextInt(0, 256), new Random().nextInt(0, 256),
-            new Random().nextInt(0, 256));
-        centerPnl.setBackground(clrPanels);
-        clrPanels = new Color(new Random().nextInt(0, 256), new Random().nextInt(0, 256),
-            new Random().nextInt(0, 256));
-        customActivityPanel.setBackground(clrPanels);
-        clrPanels = new Color(new Random().nextInt(0, 256), new Random().nextInt(0, 256),
-            new Random().nextInt(0, 256));
-        activityInfoPanel.setBackground(clrPanels);
+        try {
+          Thread.sleep(25);
+        } catch (InterruptedException ignored) {}
+
+        hue = (hue - deltaHue) % 1.0f;
+        Color color = Color.getHSBColor(hue, saturation, brightness);
+        setBackground(color);
+        west.setBackground(color);
+        south.setBackground(color);
+        south.setBackground(color);
+        centerPnl.setBackground(color);
+        customActivityPanel.setBackground(color);
+        activityInfoPanel.setBackground(color);
       }
     }).start();
   }
