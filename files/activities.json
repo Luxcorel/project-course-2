@@ -1,8 +1,8 @@
 [
   {
-    "activityName": "Test",
-    "activityInstruction": "Test",
-    "activityInfo": "Test",
+    "activityName": "Activty",
+    "activityInstruction": "Instructions...",
+    "activityInfo": "This exercise...",
     "isCompleted": false,
     "imagePath": "/Users/johannes/demo.png",
     "activityID": "45bba62f-33e6-428c-be18-c6dc94c722fb"
